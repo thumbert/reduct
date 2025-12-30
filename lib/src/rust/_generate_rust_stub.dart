@@ -67,7 +67,8 @@ String generateRustStub(
   buffer.write(makeArchiveTest());
 
   buffer.write('\n\n');
-  buffer.write(makeApiQueryStruct(columns, requiredFilters: requiredFilters));
+  buffer.write(makeApiQueryStruct(columns));
+  buffer.write(makeApiQueryImpl(columns));
 
   return buffer.toString();
 }

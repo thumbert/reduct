@@ -295,6 +295,7 @@ List<String> splitColumnDefinitions(String sql) {
       .map(
           (s) => s.trim().replaceAll('\n', ' ').replaceAll(RegExp(r'\s+'), ' '))
       .where((s) => s.isNotEmpty)
+      .where((s) => !s.startsWith('--')) // ignore comment lines
       .toList();
 }
 

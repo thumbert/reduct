@@ -45,6 +45,22 @@ const like = 'sample';
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+### DuckDB
+
+For the sake of consistency, the table definition in DuckDB the column names 
+should be in **snake_case**.  If not, an error will will thrown. 
+
+### Rust (server + client)
+
+#### Rust Server 
+The generated code for the Rust enums respect the Rust naming conventions 
+for the enum and variants (**camelCase**) while at the same time ensuring that the 
+serialization returns back the original values as stored in the database. 
+
+#### Rust Client
+
+### Dart (client only)
+
+The Dart client will generate objects to represent a record in the database and 
+a function to retrieve the data according to the various filters supported. 
+

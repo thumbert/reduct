@@ -1,0 +1,19 @@
+#[derive(Debug, Deserialize)]
+pub struct ApiQuery {
+    pub hour_beginning: Option<Zoned>,
+    pub hour_beginning_gte: Option<Zoned>,
+    pub hour_beginning_lt: Option<Zoned>,
+    pub resource_type: Option<ResourceType>,
+    pub resource_type_in: Option<String>,
+    pub id: Option<u32>,
+    pub id_in: Option<String>,
+    pub id_gte: Option<u32>,
+    pub id_lte: Option<u32>,
+    pub location: Option<String>,
+    pub location_like: Option<String>,
+    pub location_in: Option<String>,
+    pub price: Option<Decimal>,
+    pub price_in: Option<String>,
+    pub price_gte: Option<Decimal>,
+    pub price_lte: Option<Decimal>,
+}
