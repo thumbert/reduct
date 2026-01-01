@@ -8,6 +8,22 @@ extension StringExtensions on String {
     return this == toUpperCase();
   }
 
+  String toCamelCase() {
+    if (isEmpty) return this;
+
+    // Split the string into words based on spaces, underscores, and hyphens
+    List<String> words = replaceAll(RegExp(r'[_\-\s]+'), ' ')
+        .split(' ')
+        .where((word) => word.isNotEmpty)
+        .toList();
+
+    // Lowercase the first word and capitalize the first letter of subsequent words
+    String camelCaseString = words[0].toLowerCase() +
+        words.skip(1).map((word) => word.capitalize()).join('');
+
+    return camelCaseString;
+  }
+
   /// Converts a string to PascalCase.
   /// Handles strings with spaces, underscores, and hyphens as word separators.
   /// Examples:

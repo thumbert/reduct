@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS tmp (
       final generator = CodeGenerator(
         input,
         timezoneName: 'America/Los_Angeles',
-        language: Language.rust,
       );
       var generateHtmlDocs = generator.generateHtmlDocs();
       print(generateHtmlDocs);

@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:reduct/src/rust/enums.dart';
+import 'package:reduct/src/dart/enums.dart';
 import 'package:test/test.dart';
 
 void tests() {
-  group('Enum Rust tests', () {
-        test('make Rust enum', () {
+  group('Dart enum tests', () {
+        test('make Dart enum', () {
       final actual = makeEnum(
           columnName: 'sector',
           values: [
@@ -17,11 +17,10 @@ void tests() {
             'Publicly-Owned Entity',
             'Transmission',
             'Market Participant'
-          ],
-          isNullable: false);
+          ]);
       // print(actual);
       var expected =
-          File('test/_golden/enum_sector.rs.gold').readAsStringSync();
+          File('test/_golden/enum_sector.dart.gold').readAsStringSync();
       expect(actual, expected);
     });
 

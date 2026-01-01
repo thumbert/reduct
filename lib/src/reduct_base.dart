@@ -1,3 +1,4 @@
+import 'package:reduct/src/dart/_generate_dart_stub.dart';
 import 'package:reduct/src/utils/string_extensions.dart';
 
 import 'rust/_generate_rust_stub.dart';
@@ -11,7 +12,6 @@ enum Language {
 class CodeGenerator {
   CodeGenerator(
     this.sql, {
-    required this.language,
     this.requiredFilters = const [],
     this.timezoneName,
   }) {
@@ -20,7 +20,6 @@ class CodeGenerator {
   }
 
   final String sql;
-  final Language language;
   final String? timezoneName;
   final List<String> requiredFilters;
 
@@ -28,19 +27,17 @@ class CodeGenerator {
   late final String tableName;
   late final List<Column> columns;
 
-  String generateCode() {
+  String generateCode(Language language) {
     switch (language) {
       case Language.dart:
-        return _generateDartStub();
+        return generateDartStub(columns,
+            tableName: tableName, requiredFilters: requiredFilters);
       case Language.rust:
         return generateRustStub(columns,
             tableName: tableName, requiredFilters: requiredFilters);
     }
   }
 
-  String _generateDartStub() {
-    throw UnimplementedError('Dart stub generation not implemented yet.');
-  }
 
 
   /// Generate HTML documentation for the query.

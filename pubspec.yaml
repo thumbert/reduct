@@ -1,14 +1,14 @@
 name: reduct
-description: A starting point for Dart libraries or applications.
-version: 1.0.0
+description: A Dart package to generate polyglot code from a DuckDB table definition.
+version: 0.1.1
 # repository: https://github.com/my_org/my_repo
 
 environment:
-  sdk: ^3.10.7
+  sdk: ^3.10.0
 
-# Add regular dependencies here.
 dependencies:
-  # path: ^1.9.0
+  decimal: ^3.2.4
+
 
 dev_dependencies:
   lints: ^6.0.0
