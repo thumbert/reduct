@@ -1,6 +1,7 @@
 import 'package:reduct/src/dart/_generate_dart_stub.dart';
 import 'package:reduct/src/utils/string_extensions.dart';
 
+import 'html_docs.dart';
 import 'rust/_generate_rust_stub.dart';
 
 /// Supported target languages for code generation.
@@ -38,65 +39,12 @@ class CodeGenerator {
     }
   }
 
-
-
-  /// Generate HTML documentation for the query.
-  /// HTML query parameters use the Rust variable naming convention.
   String generateHtmlDocs() {
-    final buffer = StringBuffer();
-    buffer
-        .writeln('<p>The url query string supports the following filters:</p>');
-    buffer.writeln('<p>All filters are optional unless otherwise noted.  '
-        'If the amount of data returned is too large, the server will return '
-        'an error.</p>');
-    buffer.writeln('<ul style="list-style-type: circle;">');
-    for (var column in columns) {
-      var comments = '';
-      if (column.type == ColumnTypeDuckDB.enumType) {
-        final variants = getEnumVariants(column.input);
-        comments =
-            '  Possible values: <span style="font-family: monospace">${variants.map((e) => '"$e"').join(', ')}</span>.';
-      }
-      if (column.isNullable) {
-        comments += '  An explicit value of <span style="font-family: monospace">NULL</span> is accepted.';
-      }
-      for (var filterClause in column.filterClauses) {
-        switch (filterClause) {
-          case FilterClause.equal:
-            buffer.writeln('  <li><b>${column.name}</b> A filter for matching '
-                'exactly one value in column ${column.name}.$comments');
-            break;
-          case FilterClause.greaterThanOrEqual:
-            buffer.writeln(
-                '  <li><b>${column.name}_gte</b> A filter for values '
-                'greater than or equal to a given value in column ${column.name}.');
-            break;
-          case FilterClause.lessThan:
-            buffer.writeln('  <li><b>${column.name}_lt</b> A filter for values '
-                'less than a given value in column ${column.name}.');
-            break;
-          case FilterClause.lessThanOrEqual:
-            buffer.writeln(
-                '  <li><b>${column.name}_lte</b> A filter for values '
-                'less than or equal to a given value in column ${column.name}.');
-            break;
-          case FilterClause.like:
-            buffer.writeln('  <li><b>${column.name}_like</b> A string pattern '
-                'to be used as a SQL like filter for the values in column '
-                '${column.name}.');
-            break;
-          case FilterClause.inList:
-            buffer.writeln('  <li><b>${column.name}_in</b> A list of values '
-                'separated by commas.  If the values themselves contain commas, '
-                'they should be enclosed in double quotes.');
-            break;
-        }
-      }
-    }
-    buffer.writeln('</ul>');
-
-    return buffer.toString();
+    return generateDocs(columns);
   }
+
+
+
 }
 
 class Column {

@@ -17,13 +17,13 @@ void tests() {
           timezoneName: 'America/New_York',
         ),
       ];
-      final actual = makeRecord(columns);
+      final actual = makeRecordClass(columns);
 
       print(actual);
-      // var expected = File(
-      //   'test/_golden/class_record.dart.gold',
-      // ).readAsStringSync();
-      // expect(actual, expected);
+      var expected = File(
+        'test/_golden/class_record.dart.gold',
+      ).readAsStringSync();
+      expect(actual, expected);
     });
   });
 }

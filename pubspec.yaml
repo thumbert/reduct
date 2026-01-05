@@ -1,13 +1,17 @@
 name: reduct
 description: A Dart package to generate polyglot code from a DuckDB table definition.
 version: 0.1.1
+publish_to: none
 # repository: https://github.com/my_org/my_repo
 
 environment:
   sdk: ^3.10.0
 
 dependencies:
-  decimal: ^3.2.4
+  # date:
+  #   git: https://github.com/thumbert/date.git
+  # decimal: ^3.2.4
+  # timezone: ^0.9.1
 
 
 dev_dependencies:

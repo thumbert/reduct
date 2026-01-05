@@ -15,7 +15,7 @@ String makeArchiveTest() {
   buffer.writeln(
       '        let config = Config::default().access_mode(AccessMode::ReadOnly)?;');
   buffer.writeln(
-      '        let conn = Connection::open_with_flags(ProdDb::xxx().duckdb_path, config).unwrap();');
+      '        let conn = Connection::open_with_flags(ProdDb::scratch().duckdb_path, config).unwrap();');
   buffer.writeln('        let filter = QueryFilterBuilder::new().build();');
   buffer.writeln(
       '        let xs: Vec<Record> = get_data(&conn, &filter).unwrap();');

@@ -24,54 +24,8 @@ CREATE TABLE IF NOT EXISTS public_bids_da (
     max_eoh_state_of_charge DECIMAL(9,4),
 );
 ''';
-  final generator = CodeGenerator(
-    sql,
-    // requiredFilters: <String>[],
-    timezoneName: 'America/Los_Angeles',
-  );
+  final generator = CodeGenerator(sql, timezoneName: 'America/Los_Angeles');
   print(generator.generateCode(Language.rust));
   // print(generator.generateHtmlDocs());
-}
-
-
-
-
-
-enum Sector {
-    supplier,
-    notApplicable,
-    alternativeResources,
-    generation,
-    endUser,
-    publiclyOwnedEntity,
-    transmission,
-    marketParticipant;
-
-  static Sector? parse(String value) {
-    return switch (value.toLowerCase()) {
-      'supplier' => Sector.supplier,
-      'not applicable' => Sector.notApplicable,
-      'alternative resources' => Sector.alternativeResources,
-      'generation' => Sector.generation,
-      'end user' => Sector.endUser,
-      'publicly-owned entity' => Sector.publiclyOwnedEntity,
-      'transmission' => Sector.transmission,
-      'market participant' => Sector.marketParticipant,
-      _ => throw ArgumentError("Invalid value for Sector: $value"),
-    };
-  }
-
-  @override
-  String toString() {
-    return switch (this) {
-      Sector.supplier => 'Supplier',
-      Sector.notApplicable => 'Not Applicable',
-      Sector.alternativeResources => 'Alternative Resources',
-      Sector.generation => 'Generation',
-      Sector.endUser => 'End User',
-      Sector.publiclyOwnedEntity => 'Publicly-owned Entity',
-      Sector.transmission => 'Transmission',
-      Sector.marketParticipant => 'Market Participant',
-    };
-  }
+  // print(generator.generateCode(Language.dart));
 }

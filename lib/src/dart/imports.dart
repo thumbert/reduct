@@ -22,6 +22,7 @@ String addImports(List<Column> columns) {
     }
   }
 
+  buffer.writeln("import 'package:http/http.dart' as http;");
   if (hasDate) {
     buffer.writeln("import 'package:date/date.dart';");
   }

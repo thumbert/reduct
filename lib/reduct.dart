@@ -4,4 +4,3 @@
 library;
 
 export 'src/reduct_base.dart';
-

@@ -1,9 +1,10 @@
 import 'package:reduct/reduct.dart';
-import 'package:reduct/src/dart/class_api_query_filter.dart';
 
+import 'class_api_query_filter.dart';
 import 'class_record.dart';
 import 'enums.dart';
 import 'imports.dart';
+import 'query_records_function.dart';
 import 'test_client.dart';
 
 String generateDartStub(
@@ -20,30 +21,25 @@ String generateDartStub(
   buffer.write(addImports(columns));
 
   buffer.write('\n');
-  buffer.write(makeRecord(columns));
+  buffer.write(makeQueryRecordsFunction(columns, tableName));
+
+  buffer.write('\n');
+  buffer.write(makeRecordClass(columns));
 
   for (var column in columns) {
     if (column.type == ColumnTypeDuckDB.enumType) {
       final variants = getEnumVariants(column.input);
       variants.sort();
       buffer.write('\n');
-      buffer.write(
-        makeEnum(
-          columnName: column.name,
-          values: variants,
-        ),
-      );
+      buffer.write(makeEnum(columnName: column.name, values: variants));
     }
   }
 
-  // buffer.write('\n');
-  // buffer.write(makeQueryFunction(tableName, columns));
+  buffer.write('\n');
+  buffer.write(makeApiQueryFilterClass(columns));
 
   buffer.write('\n\n');
   buffer.write(makeClientTest());
-
-  buffer.write('\n\n');
-  buffer.write(makeApiQueryFilterClass(columns));
 
   return buffer.toString();
 }

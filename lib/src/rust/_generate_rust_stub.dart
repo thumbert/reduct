@@ -1,4 +1,5 @@
 import 'package:reduct/reduct.dart';
+import 'package:reduct/src/rust/test_api_route.dart';
 
 import 'enums.dart';
 import 'imports.dart';
@@ -54,21 +55,31 @@ String generateRustStub(
     }
   }
 
-  buffer.write('\n');
+  buffer.write('\n\n');
+  buffer.writeln('//=========================================================');
+  buffer.writeln('// Rust archive file');
+  buffer.writeln('//=========================================================');
   buffer.write(makeQueryFunction(tableName, columns));
-
   buffer.write('\n');
   buffer.write(makeQueryFilterStruct(columns));
-
   buffer.write('\n');
   buffer.write(makeQueryFilterBuilder(columns));
-
-  buffer.write('\n\n');
+  buffer.write('\n');
   buffer.write(makeArchiveTest());
 
   buffer.write('\n\n');
+  buffer.writeln('//=========================================================');
+  buffer.writeln('// Rust API endpoint file');
+  buffer.writeln('//=========================================================');
+  buffer.write(addApiImports(columns));
+  buffer.writeln();
+  buffer.write(makeApiEndpoint(columns));
+  buffer.writeln();
   buffer.write(makeApiQueryStruct(columns));
+  buffer.writeln();
   buffer.write(makeApiQueryImpl(columns));
+  buffer.writeln();
+  buffer.write(makeApiTest());
 
   return buffer.toString();
 }
