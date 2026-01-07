@@ -14,7 +14,8 @@ String getDartType({
     case ColumnTypeDuckDB.date:
       return isNullable ? 'Date?' : 'Date';
     case ColumnTypeDuckDB.decimal:
-      return isNullable ? 'Decimal?' : 'Decimal';
+      // return isNullable ? 'Decimal?' : 'Decimal';
+      return isNullable ? 'num?' : 'num';
     case ColumnTypeDuckDB.tinyint:
       return isNullable ? 'int?' : 'int';
     case ColumnTypeDuckDB.int16:

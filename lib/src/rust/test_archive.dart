@@ -18,9 +18,9 @@ String makeArchiveTest() {
       '        let conn = Connection::open_with_flags(ProdDb::scratch().duckdb_path, config).unwrap();');
   buffer.writeln('        let filter = QueryFilterBuilder::new().build();');
   buffer.writeln(
-      '        let xs: Vec<Record> = get_data(&conn, &filter).unwrap();');
+      '        let xs: Vec<Record> = get_data(&conn, &filter, Some(5)).unwrap();');
   buffer.writeln('        conn.close().unwrap();');
-  buffer.writeln('        assert_eq!(xs.len(), 0);');
+  buffer.writeln('        assert_eq!(xs.len(), 5);');
   buffer.writeln('        Ok(())');
   buffer.writeln('    }');
   buffer.writeln('}');

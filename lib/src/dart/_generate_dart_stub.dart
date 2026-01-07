@@ -1,17 +1,16 @@
 import 'package:reduct/reduct.dart';
 
-import 'class_api_query_filter.dart';
+import 'class_query_filter.dart';
 import 'class_record.dart';
 import 'enums.dart';
 import 'imports.dart';
 import 'query_records_function.dart';
 import 'test_client.dart';
 
-String generateDartStub(
-  List<Column> columns, {
-  required String tableName,
-  required List<String> requiredFilters,
-}) {
+String generateDartStub(CodeGenerator generator) {
+  final tableName = generator.tableName;
+  final columns = generator.columns;
+
   final buffer = StringBuffer();
   buffer.writeln('// Auto-generated Dart stub for DuckDB table: $tableName');
   buffer.writeln(
@@ -21,7 +20,7 @@ String generateDartStub(
   buffer.write(addImports(columns));
 
   buffer.write('\n');
-  buffer.write(makeQueryRecordsFunction(columns, tableName));
+  buffer.write(makeQueryRecordsFunction(generator));
 
   buffer.write('\n');
   buffer.write(makeRecordClass(columns));
@@ -36,10 +35,10 @@ String generateDartStub(
   }
 
   buffer.write('\n');
-  buffer.write(makeApiQueryFilterClass(columns));
+  buffer.write(makeQueryFilterClass(columns));
 
   buffer.write('\n\n');
-  buffer.write(makeClientTest());
+  buffer.write(makeClientTest(generator));
 
   return buffer.toString();
 }

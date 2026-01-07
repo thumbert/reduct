@@ -22,7 +22,7 @@ String makeEnum({
   buffer.writeln();
 
   // parse method
-  buffer.writeln('  static $enumNameDart? parse(String value) {');
+  buffer.writeln('  static $enumNameDart parse(String value) {');
   buffer.writeln('    return switch (value.toLowerCase()) {');
   for (var value in values) {
     final variantNameDart = value.toCamelCase();

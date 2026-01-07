@@ -79,6 +79,11 @@ String generateDocs(List<Column> columns) {
       }
     }
   }
+  // add the _limit parameter
+  buffer.writeln(
+    '  <li><b>_limit</b> An optional limit on the number of records returned '
+    'by the query.  If not specified, all matching records will be returned.',
+  );
   buffer.writeln('</ul>');
 
   return buffer.toString();

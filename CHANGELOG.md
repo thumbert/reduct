@@ -3,6 +3,21 @@ TODO:
  - Implement a QueryFilter class for Dart client
  - Implement a method to go from a QueryFilter class to a URI fragment.
 
+# 0.2.0 (2026-01-07)
+- Add an optional limit field for SQL all queries.
+- Dart client improvements
+    - Add Dart client test file.
+    - Add an optional `limit` argument to the `queryRecords` function to 
+      limit the number or records returned.
+    - Add `toUriParams` method to the `QueryFilter` class.
+    - Add `toString` method to the `QueryFilter` class.  
+    - Improved generated docs.
+- Rust client improvements: 
+    - Generate the API test using the `QueryFilterBuilder` and `_limit` parameter. 
+    - Add impl method `to_query_url` to go from a `QueryFilter` to an url
+- Html documentation improvements:
+    - Add the `_limit` parameter and document it's use.    
+
 ## 0.1.3 (2026-01-04)
 - Improvements to both the Rust and Dart clients. 
 

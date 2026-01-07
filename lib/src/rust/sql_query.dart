@@ -1,7 +1,7 @@
 import 'package:reduct/reduct.dart';
 import 'package:reduct/src/utils/string_extensions.dart';
 
-String makeSqlQuery(String tableName, List<Column> columns) {
+String makeSqlQuery(String tableName, List<Column> columns, {int? limit}) {
   final buffer = StringBuffer();
   var query = 'SELECT\n    ';
   query += columns.map((c) => c.name.toSnakeCase()).join(',\n    ');
@@ -11,8 +11,11 @@ String makeSqlQuery(String tableName, List<Column> columns) {
   // Add the SQL filter statements from the query parameters
   for (var column in columns) {
     for (var filterClause in column.filterClauses) {
-      var name = getQueryFilterVariableName(column,
-          clause: filterClause, language: Language.rust);
+      var name = getQueryFilterVariableName(
+        column,
+        clause: filterClause,
+        language: Language.rust,
+      );
       var borrow = '&';
       buffer.writeln('    if let Some($name) = ${borrow}query_filter.$name {');
       if (filterClause == FilterClause.inList) {
@@ -21,11 +24,13 @@ String makeSqlQuery(String tableName, List<Column> columns) {
             column.type == ColumnTypeDuckDB.date) {
           // quoted values
           buffer.writeln(
-              "        query.push_str(&format!(\"\n    ${filterClause.makeFilter(column)}\", $name.iter().map(|v| v.to_string()).collect::<Vec<_>>().join(\"','\")));");
+            "        query.push_str(&format!(\"\n    ${filterClause.makeFilter(column)}\", $name.iter().map(|v| v.to_string()).collect::<Vec<_>>().join(\"','\")));",
+          );
         } else {
           // unquoted values
           buffer.writeln(
-              "        query.push_str(&format!(\"\n    ${filterClause.makeFilter(column)}\", $name.iter().map(|v| v.to_string()).collect::<Vec<_>>().join(\",\")));");
+            "        query.push_str(&format!(\"\n    ${filterClause.makeFilter(column)}\", $name.iter().map(|v| v.to_string()).collect::<Vec<_>>().join(\",\")));",
+          );
         }
       } else {
         var adder = '';
@@ -33,13 +38,19 @@ String makeSqlQuery(String tableName, List<Column> columns) {
           adder = '.strftime("%Y-%m-%d %H:%M:%S.000%:z")';
         }
         buffer.writeln(
-            "        query.push_str(&format!(\"\n    ${filterClause.makeFilter(column)}\", $name$adder));");
+          "        query.push_str(&format!(\"\n    ${filterClause.makeFilter(column)}\", $name$adder));",
+        );
       }
       buffer.writeln('    }');
     }
   }
-  buffer.writeln("    query.push(';');");
-
+  buffer.writeln("    match limit {");
+  buffer.writeln("        Some(l) => {");
+  buffer.writeln('            query.push_str(&format!("\nLIMIT {};", l));');
+  buffer.writeln("        },");
+  buffer.writeln("        None => {");
+  buffer.writeln('            query.push(\';\');');
+  buffer.writeln("        },");
+  buffer.writeln("    }");
   return buffer.toString();
 }
-

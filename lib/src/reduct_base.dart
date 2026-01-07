@@ -5,24 +5,41 @@ import 'html_docs.dart';
 import 'rust/_generate_rust_stub.dart';
 
 /// Supported target languages for code generation.
-enum Language {
-  dart,
-  rust,
-}
+enum Language { dart, rust }
 
 class CodeGenerator {
   CodeGenerator(
     this.sql, {
     this.requiredFilters = const [],
     this.timezoneName,
+    required this.apiRoute,
   }) {
+    assert(
+      apiRoute.startsWith('/'),
+      'apiRoute should start with a forward slash (/)',
+    );
+    assert(
+      !apiRoute.endsWith('/'),
+      'apiRoute should not end with a forward slash (/)',
+    );
     tableName = getTableName(sql);
     columns = getColumns(sql, timezoneName: timezoneName);
   }
 
+  /// The SQL CREATE TABLE statement.
   final String sql;
+
+  /// A timezone name like 'America/New_York' for TIMESTAMPTZ columns.
+  /// It is required if there are any TIMESTAMPTZ columns.
   final String? timezoneName;
+
+  /// List of required filters for the API parameters.
   final List<String> requiredFilters;
+
+  /// The API route for querying without the root URL and filters.
+  /// Should contain a leading slash and the table name,
+  /// for example: '/caiso/public_bids_da'
+  final String apiRoute;
 
   ///
   late final String tableName;
@@ -31,20 +48,15 @@ class CodeGenerator {
   String generateCode(Language language) {
     switch (language) {
       case Language.dart:
-        return generateDartStub(columns,
-            tableName: tableName, requiredFilters: requiredFilters);
+        return generateDartStub(this);
       case Language.rust:
-        return generateRustStub(columns,
-            tableName: tableName, requiredFilters: requiredFilters);
+        return generateRustStub(this);
     }
   }
 
   String generateHtmlDocs() {
     return generateDocs(columns);
   }
-
-
-
 }
 
 class Column {
@@ -58,12 +70,14 @@ class Column {
     if (type == ColumnTypeDuckDB.timestamptz) {
       if (timezoneName == null) {
         throw StateError(
-            'timezoneName is required for TIMESTAMPTZ columns: $name');
+          'timezoneName is required for TIMESTAMPTZ columns: $name',
+        );
       }
     } else {
       if (timezoneName != null) {
         throw StateError(
-            'timezoneName should only be provided for TIMESTAMPTZ columns: $name');
+          'timezoneName should only be provided for TIMESTAMPTZ columns: $name',
+        );
       }
     }
   }
@@ -99,10 +113,11 @@ class Column {
     String? timezoneName,
   }) {
     return Column(
-        name: name ?? this.name,
-        type: type ?? this.type,
-        isNullable: isNullable ?? this.isNullable,
-        timezoneName: timezoneName ?? this.timezoneName);
+      name: name ?? this.name,
+      type: type ?? this.type,
+      isNullable: isNullable ?? this.isNullable,
+      timezoneName: timezoneName ?? this.timezoneName,
+    );
   }
 
   /// Get the default filters for a given DuckDB column type.
@@ -119,29 +134,28 @@ class Column {
       ColumnTypeDuckDB.uint16 ||
       ColumnTypeDuckDB.uint32 ||
       ColumnTypeDuckDB.uint64 ||
-      ColumnTypeDuckDB.uint128 =>
-        [
-          FilterClause.equal,
-          FilterClause.inList,
-          FilterClause.greaterThanOrEqual,
-          FilterClause.lessThanOrEqual,
-        ],
+      ColumnTypeDuckDB.uint128 => [
+        FilterClause.equal,
+        FilterClause.inList,
+        FilterClause.greaterThanOrEqual,
+        FilterClause.lessThanOrEqual,
+      ],
       ColumnTypeDuckDB.double || ColumnTypeDuckDB.float => [
-          FilterClause.greaterThanOrEqual,
-          FilterClause.lessThan,
-        ],
+        FilterClause.greaterThanOrEqual,
+        FilterClause.lessThan,
+      ],
       ColumnTypeDuckDB.timestamp || ColumnTypeDuckDB.timestamptz => [
-          FilterClause.equal,
-          FilterClause.greaterThanOrEqual,
-          FilterClause.lessThan
-        ],
+        FilterClause.equal,
+        FilterClause.greaterThanOrEqual,
+        FilterClause.lessThan,
+      ],
       ColumnTypeDuckDB.enumType => [FilterClause.equal, FilterClause.inList],
       ColumnTypeDuckDB.time => <FilterClause>[],
       ColumnTypeDuckDB.varchar => [
-          FilterClause.equal,
-          FilterClause.like,
-          FilterClause.inList
-        ],
+        FilterClause.equal,
+        FilterClause.like,
+        FilterClause.inList,
+      ],
     };
     return filters;
   }
@@ -160,10 +174,10 @@ enum FilterClause {
     late final String filterString;
     switch (column.type) {
       case ColumnTypeDuckDB.varchar ||
-            ColumnTypeDuckDB.enumType ||
-            ColumnTypeDuckDB.timestamptz ||
-            ColumnTypeDuckDB.timestamp ||
-            ColumnTypeDuckDB.date:
+          ColumnTypeDuckDB.enumType ||
+          ColumnTypeDuckDB.timestamptz ||
+          ColumnTypeDuckDB.timestamp ||
+          ColumnTypeDuckDB.date:
         switch (this) {
           case FilterClause.equal:
             filterString = "AND ${column.name} = '{}'";
@@ -228,8 +242,10 @@ List<Column> getColumns(String input, {String? timezoneName}) {
 /// column definition strings, potentially collapsing multiple lines into one.
 List<String> splitColumnDefinitions(String sql) {
   // Extract the block inside parentheses after CREATE TABLE
-  final tableDefMatch =
-      RegExp(r'CREATE TABLE.*?\((.*)\)', dotAll: true).firstMatch(sql);
+  final tableDefMatch = RegExp(
+    r'CREATE TABLE.*?\((.*)\)',
+    dotAll: true,
+  ).firstMatch(sql);
   if (tableDefMatch == null) return [];
   final columnsBlock = tableDefMatch.group(1)!;
 
@@ -238,7 +254,8 @@ List<String> splitColumnDefinitions(String sql) {
   return columnsBlock
       .split(splitter)
       .map(
-          (s) => s.trim().replaceAll('\n', ' ').replaceAll(RegExp(r'\s+'), ' '))
+        (s) => s.trim().replaceAll('\n', ' ').replaceAll(RegExp(r'\s+'), ' '),
+      )
       .where((s) => s.isNotEmpty)
       .where((s) => !s.startsWith('--')) // ignore comment lines
       .toList();
@@ -246,9 +263,10 @@ List<String> splitColumnDefinitions(String sql) {
 
 /// Extract the table name from a CREATE TABLE statement.
 String getTableName(String input) {
-  final match =
-      RegExp(r'CREATE TABLE(?: IF NOT EXISTS)?\s+(\w+)', caseSensitive: false)
-          .firstMatch(input);
+  final match = RegExp(
+    r'CREATE TABLE(?: IF NOT EXISTS)?\s+(\w+)',
+    caseSensitive: false,
+  ).firstMatch(input);
   if (match != null) {
     return match.group(1)!;
   } else {
@@ -267,7 +285,8 @@ String getColumnName(String input) {
   }
   if (parts[0] != parts[0].toSnakeCase()) {
     throw FormatException(
-        'Column name must be in snake_case: found "${parts[0]}"');
+      'Column name must be in snake_case: found "${parts[0]}"',
+    );
   }
   return parts[0];
 }
@@ -342,20 +361,23 @@ bool isColumnNullable(String input) {
 /// The Rust enum variant name will be in Pascal case.
 List<String> getEnumVariants(String input) {
   // Split by commas not inside quotes
-  final variantList = RegExp(r"'([^']*)'")
-      .allMatches(input)
-      .map((m) => m.group(1) ?? '')
-      .toList();
+  final variantList = RegExp(
+    r"'([^']*)'",
+  ).allMatches(input).map((m) => m.group(1) ?? '').toList();
   return variantList;
 }
 
 /// Given a column and a filter clause, return the variable name for the filter.
-String getQueryFilterVariableName(Column column,
-    {required FilterClause clause, required Language language}) {
+String getQueryFilterVariableName(
+  Column column, {
+  required FilterClause clause,
+  required Language language,
+}) {
   switch (language) {
     case Language.dart:
       return throw UnimplementedError(
-          'Dart filter variable name generation not implemented yet.');
+        'Dart filter variable name generation not implemented yet.',
+      );
     case Language.rust:
       switch (clause) {
         case FilterClause.equal:

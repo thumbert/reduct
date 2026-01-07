@@ -24,7 +24,11 @@ CREATE TABLE IF NOT EXISTS public_bids_da (
     max_eoh_state_of_charge DECIMAL(9,4),
 );
 ''';
-  final generator = CodeGenerator(sql, timezoneName: 'America/Los_Angeles');
+  final generator = CodeGenerator(
+    sql,
+    timezoneName: 'America/Los_Angeles',
+    apiRoute: '/caiso/public_bids_da',
+  );
   print(generator.generateCode(Language.rust));
   // print(generator.generateHtmlDocs());
   // print(generator.generateCode(Language.dart));

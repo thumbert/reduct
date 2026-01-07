@@ -4,8 +4,11 @@ String addImports(List<Column> columns) {
   final buffer = StringBuffer();
   // buffer.writeln('use std::error::Error;');
   // buffer.writeln('use log::{error, info};');
+  buffer.writeln('use std::collections::HashMap;');
+  buffer.writeln();
   buffer.writeln('use serde::{Serialize, Deserialize};');
   buffer.writeln('use duckdb::Connection;');
+  buffer.writeln('use url::form_urlencoded;');
   buffer.writeln('');
 
   bool hasDecimal = false;
@@ -62,4 +65,3 @@ String addImports(List<Column> columns) {
   buffer.writeln();
   return buffer.toString();
 }
-

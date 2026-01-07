@@ -8,8 +8,12 @@ void main() {
     (line) => line.trim().toUpperCase().startsWith(');'),
   );
   final sql = lines.sublist(0, idx + 1).join('\n');
-  final generator = CodeGenerator(sql, timezoneName: 'America/New_York');
-  // print(generator.generateCode(Language.rust));
+  final generator = CodeGenerator(
+    sql,
+    timezoneName: 'America/New_York',
+    apiRoute: 'basic',
+  );
+  print(generator.generateCode(Language.rust));
   // print(generator.generateHtmlDocs());
-  print(generator.generateCode(Language.dart));
+  // print(generator.generateCode(Language.dart));
 }

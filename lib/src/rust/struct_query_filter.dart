@@ -44,3 +44,42 @@ String makeQueryFilterStruct(List<Column> columns) {
   return buffer.toString();
 }
 
+/// Generate the implementation of a to_query_url method for the QueryFilter struct.
+String makeQueryFilterImpl(List<Column> columns) {
+  final buffer = StringBuffer();
+  buffer.writeln('impl QueryFilter {');
+  buffer.writeln('    pub fn to_query_url(&self) -> String {');
+  buffer.writeln('        let mut params = HashMap::new();');
+  for (var column in columns) {
+    for (var filterClause in column.filterClauses) {
+      final fieldName = switch (filterClause) {
+        FilterClause.equal => column.name,
+        FilterClause.greaterThanOrEqual => '${column.name}_gte',
+        FilterClause.lessThan => '${column.name}_lt',
+        FilterClause.lessThanOrEqual => '${column.name}_lte',
+        FilterClause.like => '${column.name}_like',
+        FilterClause.inList => '${column.name}_in',
+      };    
+      buffer.writeln('        if let Some(value) = &self.$fieldName {');
+      if (filterClause == FilterClause.inList) {
+        buffer.writeln(
+          '            let joined = value.iter().map(|v| v.to_string()).collect::<Vec<_>>().join(",");',
+        );
+        buffer.writeln(
+          '            params.insert("$fieldName", joined);',
+        );
+      } else {
+        buffer.writeln(
+          '            params.insert("$fieldName", value.to_string());',
+        );
+      }
+      buffer.writeln('        }');
+    }
+  }
+  buffer.writeln('        form_urlencoded::Serializer::new(String::new())');
+  buffer.writeln('            .extend_pairs(&params)');
+  buffer.writeln('            .finish()');
+  buffer.writeln('    }');
+  buffer.writeln('}');  
+  return buffer.toString();
+}

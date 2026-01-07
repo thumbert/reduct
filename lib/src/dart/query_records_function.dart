@@ -1,18 +1,32 @@
 import 'package:reduct/reduct.dart';
 
-String makeQueryRecordsFunction(List<Column> columns, String tableName) {
+String makeQueryRecordsFunction(CodeGenerator generator) {
   final buffer = StringBuffer();
 
   buffer.writeln(
+    '/// Function to query records from the DuckDB table via REST API',
+  );
+  buffer.writeln('/// Use the [QueryFilter] to specify filtering criteria.  Note: ');
+  buffer.writeln('/// an empty filter will return all records if [limit] is not specified.');
+  buffer.writeln('/// [rootUrl] is the base URL of the API endpoint.');
+  buffer.writeln('/// Optional [limit] can be provided to limit the number of records.');
+  buffer.writeln('///');
+  buffer.writeln(
     'Future<List<Record>> queryRecords({'
-    ' required ApiQueryFilter filter, '
-    ' required http.Client client, '
-    ' required String baseUrl, '
+    ' required QueryFilter filter, '
+    ' required String rootUrl, '
+    ' int? limit, '
+    ' http.Client? client, '
     '}) async {',
   );
-  buffer.writeln('  final uri = Uri.parse(baseUrl).replace(');
-  buffer.writeln('    path: \'$tableName\',');
-  buffer.writeln('    queryParameters: filter?.toUriParams(),');
+  buffer.writeln('  client ??= http.Client();');
+  buffer.writeln('  final queryParams = filter.toUriParams();');
+  buffer.writeln('  if (limit != null) {');
+  buffer.writeln('    queryParams[\'_limit\'] = limit.toString();');
+  buffer.writeln('  }');
+  buffer.writeln('  final uri = Uri.parse(rootUrl).replace(');
+  buffer.writeln('    path: \'/${generator.apiRoute}\',');
+  buffer.writeln('    queryParameters: queryParams,');
   buffer.writeln('  );');
   buffer.writeln('  final response = await client.get(uri);');
   buffer.writeln('  if (response.statusCode != 200) {');

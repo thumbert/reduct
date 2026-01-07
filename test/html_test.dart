@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS tmp (
 ''';
       final generator = CodeGenerator(
         input,
+        apiRoute: 'tmp',
         timezoneName: 'America/Los_Angeles',
       );
       var generateHtmlDocs = generator.generateHtmlDocs();
@@ -26,6 +27,7 @@ CREATE TABLE IF NOT EXISTS tmp (
 ''';
       final generator = CodeGenerator(
         input,
+        apiRoute: 'tmp',
         timezoneName: 'America/Los_Angeles',
       );
       var generateHtmlDocs = generator.generateHtmlDocs();

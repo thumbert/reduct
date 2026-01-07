@@ -65,11 +65,11 @@ String addApiImports(List<Column> columns) {
   return buffer.toString();
 }
 
-String makeApiEndpoint(List<Column> columns) {
+String makeApiEndpoint(CodeGenerator generator) {
   final buffer = StringBuffer();
-  buffer.writeln('#[get("/api/data")]');
+  buffer.writeln('#[get("${generator.apiRoute}")]');
   buffer.writeln(
-    'pub async fn get_data_api(query: web::Query<ApiQuery>, data: web::Data<ScratchArchive>) -> impl Responder {',
+    'pub async fn get_data_api(query: web::Query<ApiQuery>, data: web::Data<XxxxArchive>) -> impl Responder {',
   );
   buffer.writeln('    let conn = open_with_retry(');
   buffer.writeln('        &data.duckdb_path,');
@@ -89,7 +89,7 @@ String makeApiEndpoint(List<Column> columns) {
   buffer.writeln('    let conn = conn.unwrap();');
   buffer.writeln();
   buffer.writeln('    let query_filter = query.to_query_filter();');
-  buffer.writeln('    match get_data(&conn, &query_filter) {');
+  buffer.writeln('    match get_data(&conn, &query_filter, query._limit) {');
   buffer.writeln('        Ok(records) => {');
   buffer.writeln('            if records.len() > 100_000 {');
   buffer.writeln('                HttpResponse::BadRequest()');
@@ -119,7 +119,7 @@ String makeApiEndpoint(List<Column> columns) {
 String makeApiQueryStruct(List<Column> columns) {
   final buffer = StringBuffer();
   buffer.writeln('#[derive(Debug, Deserialize)]');
-  buffer.writeln('pub struct ApiQuery {');
+  buffer.writeln('struct ApiQuery {');
   for (var column in columns) {
     final rustType = getRustType(
       type: column.type,
@@ -129,46 +129,16 @@ String makeApiQueryStruct(List<Column> columns) {
     for (var filterClause in column.filterClauses) {
       switch (filterClause) {
         case FilterClause.equal:
-          switch (column.type) {
-            case ColumnTypeDuckDB.date:
-            case ColumnTypeDuckDB.timestamptz:
-              buffer.writeln('    pub ${column.name}: Option<String>,');
-              break;
-            default:
-              buffer.writeln('    pub ${column.name}: Option<$rustType>,');
-              break;
-          }
+          buffer.writeln('    pub ${column.name}: Option<$rustType>,');
           break;
         case FilterClause.greaterThanOrEqual:
-          switch (column.type) {
-            case ColumnTypeDuckDB.date:
-            case ColumnTypeDuckDB.timestamptz:
-              buffer.writeln('    pub ${column.name}_gte: Option<String>,');
-              break;
-            default:
-              buffer.writeln('    pub ${column.name}_gte: Option<$rustType>,');
-              break;
-          }
+          buffer.writeln('    pub ${column.name}_gte: Option<$rustType>,');
           break;
         case FilterClause.lessThan:
-          switch (column.type) {
-            case ColumnTypeDuckDB.timestamptz:
-              buffer.writeln('    pub ${column.name}_lt: Option<String>,');
-              break;
-            default:
-              buffer.writeln('    pub ${column.name}_lt: Option<$rustType>,');
-              break;
-          }
+          buffer.writeln('    pub ${column.name}_lt: Option<$rustType>,');
           break;
         case FilterClause.lessThanOrEqual:
-          switch (column.type) {
-            case ColumnTypeDuckDB.date:
-              buffer.writeln('    pub ${column.name}_lte: Option<String>,');
-              break;
-            default:
-              buffer.writeln('    pub ${column.name}_lte: Option<$rustType>,');
-              break;
-          }
+          buffer.writeln('    pub ${column.name}_lte: Option<$rustType>,');
           break;
         case FilterClause.like:
           buffer.writeln('    pub ${column.name}_like: Option<String>,');
@@ -179,6 +149,8 @@ String makeApiQueryStruct(List<Column> columns) {
       }
     }
   }
+  // add a limit field
+  buffer.writeln('    pub _limit: Option<usize>,');
   buffer.writeln('}');
 
   return buffer.toString();
@@ -188,7 +160,6 @@ String makeApiQueryImpl(List<Column> columns) {
   final buffer = StringBuffer();
   buffer.writeln('impl ApiQuery {');
   buffer.writeln('    pub fn to_query_filter(&self) -> QueryFilter {');
-  // buffer.writeln('        let mut filter = QueryFilter::default();');
   buffer.writeln('        QueryFilter {');
   for (var column in columns) {
     var clone = '';
@@ -231,8 +202,13 @@ String makeApiQueryImpl(List<Column> columns) {
               );
               break;
             case ColumnTypeDuckDB.enumType:
+              final rustType = getRustType(
+                type: column.type,
+                columnName: column.name,
+                isNullable: false,
+              );
               buffer.writeln(
-                '            ${column.name}_in: self.${column.name}_in.as_ref().map(|s| s.split(\',\').map(|v| v.trim().to_string()).collect()),',
+                '            ${column.name}_in: self.${column.name}_in.as_ref().map(|s| s.split(\',\').map(|v| v.trim().parse::<$rustType>().unwrap()).collect()),',
               );
               break;
             default:

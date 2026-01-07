@@ -24,12 +24,15 @@ import 'test_archive.dart';
 ///
 ///
 /// See the test folder for examples.
-String generateRustStub(
-  List<Column> columns, {
-  required String tableName,
-  required List<String> requiredFilters,
-}) {
+String generateRustStub(CodeGenerator generator) {
+  final columns = generator.columns;
+  final tableName = generator.tableName;
+
   final buffer = StringBuffer();
+  buffer.write('\n\n');
+  buffer.writeln('//=========================================================');
+  buffer.writeln('// Rust archive file');
+  buffer.writeln('//=========================================================');
   buffer.writeln('// Auto-generated Rust stub for DuckDB table: $tableName');
   buffer.writeln(
     '// Created on ${DateTime.now().toIso8601String().substring(0, 10)} '
@@ -55,13 +58,12 @@ String generateRustStub(
     }
   }
 
-  buffer.write('\n\n');
-  buffer.writeln('//=========================================================');
-  buffer.writeln('// Rust archive file');
-  buffer.writeln('//=========================================================');
+  buffer.write('\n');
   buffer.write(makeQueryFunction(tableName, columns));
   buffer.write('\n');
   buffer.write(makeQueryFilterStruct(columns));
+  buffer.write('\n');
+  buffer.write(makeQueryFilterImpl(columns));
   buffer.write('\n');
   buffer.write(makeQueryFilterBuilder(columns));
   buffer.write('\n');
@@ -73,13 +75,13 @@ String generateRustStub(
   buffer.writeln('//=========================================================');
   buffer.write(addApiImports(columns));
   buffer.writeln();
-  buffer.write(makeApiEndpoint(columns));
+  buffer.write(makeApiEndpoint(generator));
   buffer.writeln();
   buffer.write(makeApiQueryStruct(columns));
   buffer.writeln();
   buffer.write(makeApiQueryImpl(columns));
   buffer.writeln();
-  buffer.write(makeApiTest());
+  buffer.write(makeApiTest(generator));
 
   return buffer.toString();
 }

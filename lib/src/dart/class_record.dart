@@ -38,27 +38,43 @@ String makeRecordClass(List<Column> columns, {String className = 'Record'}) {
       columnName: column.name,
       isNullable: column.isNullable,
     );
-    // final nullClause = column.isNullable ? ' == null ? null : ' : '';
-    final questionMark = column.isNullable ? '?' : '';
     switch (column.type) {
       case ColumnTypeDuckDB.date:
-        buffer.writeln(
-          '      $fieldName: json[\'${column.name}\'] == null ? null : Date.parse(json[\'${column.name}\'] as String),',
-        );
+        if (column.isNullable) {
+          buffer.writeln(
+            '      $fieldName: json[\'${column.name}\'] == null ? null : Date.parse(json[\'${column.name}\'] as String),',
+          );
+        } else {
+          buffer.writeln(
+            '      $fieldName: Date.parse(json[\'${column.name}\'] as String),',
+          );
+        }
         continue;
       case ColumnTypeDuckDB.timestamptz:
-        buffer.writeln(
-          '      $fieldName: json[\'${column.name}\'] == null ? null : TZDateTime.parse(getLocation(\'${column.timezoneName!}\'), json[\'${column.name}\'] as String),',
-        );
+        if (column.isNullable) {
+          buffer.writeln(
+            '      $fieldName: json[\'${column.name}\'] == null ? null : TZDateTime.parse(getLocation(\'${column.timezoneName!}\'), json[\'${column.name}\'] as String),',
+          );
+        } else {
+          buffer.writeln(
+            '      $fieldName: TZDateTime.parse(getLocation(\'${column.timezoneName!}\'), json[\'${column.name}\'] as String),',
+          );
+        }
         continue;
       case ColumnTypeDuckDB.enumType:
-        buffer.writeln(
-          '      $fieldName: json[\'${column.name}\'] == null ? null : ${column.name.toPascalCase()}.parse(json[\'${column.name}\'] as String),',
-        );
+        if (column.isNullable) {
+          buffer.writeln(
+            '      $fieldName: json[\'${column.name}\'] == null ? null : ${column.name.toPascalCase()}.parse(json[\'${column.name}\'] as String),',
+          );
+        } else {
+          buffer.writeln(
+            '      $fieldName: ${column.name.toPascalCase()}.parse(json[\'${column.name}\'] as String),',
+          );
+        }
         continue;
       case _:
         buffer.writeln(
-          '      $fieldName: json[\'${column.name}\'] as $dartType$questionMark,',
+          '      $fieldName: json[\'${column.name}\'] as $dartType,',
         );
         continue;
     }
@@ -72,21 +88,20 @@ String makeRecordClass(List<Column> columns, {String className = 'Record'}) {
   buffer.writeln('    return {');
   for (final column in columns) {
     final fieldName = column.name.toCamelCase();
-    // final nullClause = column.isNullable ? '$fieldName == null ? null : ' : '';
     final nullAware = column.isNullable ? '?' : '';
     switch (column.type) {
-      case ColumnTypeDuckDB.date || ColumnTypeDuckDB.enumType:
+      case ColumnTypeDuckDB.enumType:
         buffer.writeln(
           '      \'$fieldName\': $fieldName$nullAware.toString(),',
         );
         continue;
-      case ColumnTypeDuckDB.timestamptz:
+      case ColumnTypeDuckDB.timestamptz || ColumnTypeDuckDB.date:
         buffer.writeln(
           '      \'${column.name}\': $fieldName$nullAware.toIso8601String(),',
         );
         continue;
       case _:
-        buffer.writeln('      \'$fieldName\': $fieldName$nullAware,');
+        buffer.writeln('      \'$fieldName\': $fieldName,');
         continue;
     }
   }
