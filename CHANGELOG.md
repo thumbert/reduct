@@ -1,7 +1,9 @@
 TODO:
  - Implement required filters, that is filters without which the URL is invalid.
- - Implement a QueryFilter class for Dart client
- - Implement a method to go from a QueryFilter class to a URI fragment.
+ - Fix all tests!
+
+ # 0.2.1 (2026-01-12)
+ - Fix the toSnakeCase() implementation to convert 'ARA1' -> 'ARA_1'
 
 # 0.2.0 (2026-01-07)
 - Add an optional limit field for SQL all queries.
