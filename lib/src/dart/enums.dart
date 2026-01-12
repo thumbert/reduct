@@ -39,8 +39,7 @@ String makeEnum({
   buffer.writeln('    return switch (this) {');
   for (var value in values) {
     final variantNameDart = value.toCamelCase();
-    final displayValue = value.replaceAll('_', ' ').toLowerCase().split(' ').map((word) => word[0].toUpperCase() + word.substring(1)).join(' ');
-    buffer.writeln('      $enumNameDart.$variantNameDart => \'$displayValue\',');
+    buffer.writeln('      $enumNameDart.$variantNameDart => \'$value\',');
   }
   buffer.writeln('    };');
   buffer.writeln('  }');
