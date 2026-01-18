@@ -1,7 +1,7 @@
 TODO:
  - Implement required filters, that is filters without which the URL is invalid.
- - Implement a QueryFilter class for Dart client
- - Implement a method to go from a QueryFilter class to a URI fragment.
+ - Serialize Zoned fields without the timezone info
+
 
 # 0.2.0 (2026-01-07)
 - Add an optional limit field for SQL all queries.
@@ -15,6 +15,7 @@ TODO:
 - Rust client improvements: 
     - Generate the API test using the `QueryFilterBuilder` and `_limit` parameter. 
     - Add impl method `to_query_url` to go from a `QueryFilter` to an url
+    - Serialize Optional<Decimal> columns as float (default is String)
 - Html documentation improvements:
     - Add the `_limit` parameter and document it's use.    
 

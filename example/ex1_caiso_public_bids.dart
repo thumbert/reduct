@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS public_bids_da (
     timezoneName: 'America/Los_Angeles',
     apiRoute: '/caiso/public_bids_da',
   );
-  print(generator.generateCode(Language.rust));
-  // print(generator.generateHtmlDocs());
+  // print(generator.generateCode(Language.rust));
+  print(generator.generateHtmlDocs());
   // print(generator.generateCode(Language.dart));
 }

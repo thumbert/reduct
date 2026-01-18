@@ -1,5 +1,3 @@
-
-
 import 'package:reduct/reduct.dart';
 
 import 'rust_type.dart';
@@ -16,10 +14,13 @@ String makeStruct(List<Column> columns) {
     );
     if (rustType == 'Decimal') {
       buffer.writeln('    #[serde(with = "rust_decimal::serde::float")]');
+    } else if (rustType == 'Option<Decimal>') {
+      buffer.writeln(
+        '    #[serde(with = "rust_decimal::serde::float_option")]',
+      );
     }
     buffer.writeln('    pub ${column.name}: $rustType,');
   }
   buffer.writeln('}');
   return buffer.toString();
 }
-
