@@ -1,7 +1,9 @@
 TODO:
  - Implement required filters, that is filters without which the URL is invalid.
- - Serialize Zoned fields without the timezone info
+ - Fix all tests!
 
+ # 0.2.1 (2026-01-12)
+ - Fix the toSnakeCase() implementation to convert 'ARA1' -> 'ARA_1'
 
 # 0.2.0 (2026-01-07)
 - Add an optional limit field for SQL all queries.

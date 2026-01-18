@@ -12,13 +12,14 @@ extension StringExtensions on String {
     if (isEmpty) return this;
 
     // Split the string into words based on spaces, underscores, and hyphens
-    List<String> words = replaceAll(RegExp(r'[_\-\s]+'), ' ')
-        .split(' ')
-        .where((word) => word.isNotEmpty)
-        .toList();
+    List<String> words = replaceAll(
+      RegExp(r'[_\-\s]+'),
+      ' ',
+    ).split(' ').where((word) => word.isNotEmpty).toList();
 
     // Lowercase the first word and capitalize the first letter of subsequent words
-    String camelCaseString = words[0].toLowerCase() +
+    String camelCaseString =
+        words[0].toLowerCase() +
         words.skip(1).map((word) => word.capitalize()).join('');
 
     return camelCaseString;
@@ -38,12 +39,14 @@ extension StringExtensions on String {
     List<String> words = formattedInput.split(' ');
 
     // Capitalize the first letter of each word and join them
-    String pascalCaseString = words.map((word) {
-      if (word.isEmpty) {
-        return '';
-      }
-      return word[0].toUpperCase() + word.substring(1);
-    }).join('');
+    String pascalCaseString = words
+        .map((word) {
+          if (word.isEmpty) {
+            return '';
+          }
+          return word[0].toUpperCase() + word.substring(1);
+        })
+        .join('');
 
     return pascalCaseString;
   }
@@ -54,19 +57,31 @@ extension StringExtensions on String {
   ///  * "helloWorld" -> "hello_world"
   ///  * "HelloWorld" -> "hello_world"
   String toSnakeCase() {
-    // Insert underscore before every uppercase letter (except at the start), then lowercase
-    return replaceAllMapped(
+    // Insert underscore before every uppercase letter (except at the start),
+    // and between letters and numbers, then lowercase
+    String s = this;
+    s = s.replaceAllMapped(
       RegExp(r'([a-z0-9])([A-Z])'),
       (m) => '${m.group(1)}_${m.group(2)}',
-    )
-        .replaceAllMapped(
-          RegExp(r'([A-Z]+)([A-Z][a-z])'),
-          (m) => '${m.group(1)}_${m.group(2)}',
-        )
-        .replaceAll(RegExp(r'[\s\-]+'), '_')
-        .replaceAll(RegExp(r'_+'), '_')
-        .toLowerCase()
-        .replaceAll(RegExp(r'^_+|_+$'), '');
+    );
+    s = s.replaceAllMapped(
+      RegExp(r'([A-Z]+)([A-Z][a-z])'),
+      (m) => '${m.group(1)}_${m.group(2)}',
+    );
+    // Insert underscore between letters and numbers
+    s = s.replaceAllMapped(
+      RegExp(r'([A-Za-z])([0-9])'),
+      (m) => '${m.group(1)}_${m.group(2)}',
+    );
+    s = s.replaceAllMapped(
+      RegExp(r'([0-9])([A-Za-z])'),
+      (m) => '${m.group(1)}_${m.group(2)}',
+    );
+    s = s.replaceAll(RegExp(r'[\s\-]+'), '_');
+    s = s.replaceAll(RegExp(r'_+'), '_');
+    s = s.toLowerCase();
+    s = s.replaceAll(RegExp(r'^_+|_+$'), '');
+    return s;
   }
 
   /// Converts a string from camelCase to UPPER_SNAKE_CASE.
@@ -75,6 +90,7 @@ extension StringExtensions on String {
   ///   "helloWorld" -> "HELLO_WORLD"
   ///   "HelloWorld" -> "HELLO_WORLD"
   ///   "hello_world" -> "HELLO_WORLD"
+  ///   "ARA1" -> "ARA_1"
   String toUpperSnakeCase() {
     return toSnakeCase().toUpperCase();
   }

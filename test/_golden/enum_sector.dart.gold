@@ -8,7 +8,7 @@ enum Sector {
     transmission,
     marketParticipant;
 
-  static Sector? parse(String value) {
+  static Sector parse(String value) {
     return switch (value.toLowerCase()) {
       'supplier' => Sector.supplier,
       'not applicable' => Sector.notApplicable,
@@ -26,11 +26,11 @@ enum Sector {
   String toString() {
     return switch (this) {
       Sector.supplier => 'Supplier',
-      Sector.notApplicable => 'Not Applicable',
+      Sector.notApplicable => 'Not applicable',
       Sector.alternativeResources => 'Alternative Resources',
       Sector.generation => 'Generation',
       Sector.endUser => 'End User',
-      Sector.publiclyOwnedEntity => 'Publicly-owned Entity',
+      Sector.publiclyOwnedEntity => 'Publicly-Owned Entity',
       Sector.transmission => 'Transmission',
       Sector.marketParticipant => 'Market Participant',
     };

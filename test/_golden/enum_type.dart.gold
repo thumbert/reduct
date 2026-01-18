@@ -1,0 +1,23 @@
+enum Type {
+    ara1,
+    ara2,
+    ara3;
+
+  static Type parse(String value) {
+    return switch (value.toLowerCase()) {
+      'ara1' => Type.ara1,
+      'ara2' => Type.ara2,
+      'ara3' => Type.ara3,
+      _ => throw ArgumentError("Invalid value for Type: $value"),
+    };
+  }
+
+  @override
+  String toString() {
+    return switch (this) {
+      Type.ara1 => 'ARA1',
+      Type.ara2 => 'ARA2',
+      Type.ara3 => 'ARA3',
+    };
+  }
+}
