@@ -7,7 +7,7 @@ String addImports(List<Column> columns) {
   bool hasTimestamptz = false;
   for (var column in columns) {
     switch (column.type) {
-      case ColumnTypeDuckDB.date:
+      case ColumnTypeDuckDB.date || ColumnTypeDuckDB.time:
         hasDate = true;
         break;
       case ColumnTypeDuckDB.timestamptz:

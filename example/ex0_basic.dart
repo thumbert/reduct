@@ -11,9 +11,9 @@ void main() {
   final generator = CodeGenerator(
     sql,
     timezoneName: 'America/New_York',
-    apiRoute: 'basic',
+    apiRoute: '/basic',
   );
   print(generator.generateCode(Language.rust));
-  // print(generator.generateHtmlDocs());
-  // print(generator.generateCode(Language.dart));
+  print(generator.generateHtmlDocs());
+  print(generator.generateCode(Language.dart));
 }

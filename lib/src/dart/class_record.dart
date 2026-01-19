@@ -50,6 +50,17 @@ String makeRecordClass(List<Column> columns, {String className = 'Record'}) {
           );
         }
         continue;
+      case ColumnTypeDuckDB.time:
+        if (column.isNullable) {
+          buffer.writeln(
+            '      $fieldName: json[\'${column.name}\'] == null ? null : Time.parse(json[\'${column.name}\'] as String),',
+          );
+        } else {
+          buffer.writeln(
+            '      $fieldName: Time.parse(json[\'${column.name}\'] as String),',
+          );
+        }
+        continue;
       case ColumnTypeDuckDB.timestamptz:
         if (column.isNullable) {
           buffer.writeln(
@@ -90,7 +101,7 @@ String makeRecordClass(List<Column> columns, {String className = 'Record'}) {
     final fieldName = column.name.toCamelCase();
     final nullAware = column.isNullable ? '?' : '';
     switch (column.type) {
-      case ColumnTypeDuckDB.enumType:
+      case ColumnTypeDuckDB.enumType || ColumnTypeDuckDB.time:
         buffer.writeln(
           '      \'$fieldName\': $fieldName$nullAware.toString(),',
         );

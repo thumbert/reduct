@@ -134,7 +134,8 @@ class Column {
       ColumnTypeDuckDB.uint16 ||
       ColumnTypeDuckDB.uint32 ||
       ColumnTypeDuckDB.uint64 ||
-      ColumnTypeDuckDB.uint128 => [
+      ColumnTypeDuckDB.uint128 ||
+      ColumnTypeDuckDB.time => [
         FilterClause.equal,
         FilterClause.inList,
         FilterClause.greaterThanOrEqual,
@@ -150,7 +151,6 @@ class Column {
         FilterClause.lessThan,
       ],
       ColumnTypeDuckDB.enumType => [FilterClause.equal, FilterClause.inList],
-      ColumnTypeDuckDB.time => <FilterClause>[],
       ColumnTypeDuckDB.varchar => [
         FilterClause.equal,
         FilterClause.like,
@@ -338,6 +338,8 @@ ColumnTypeDuckDB getColumnType(String input) {
       return ColumnTypeDuckDB.uint128;
     case 'VARCHAR' || 'CHAR' || 'STRING' || 'TEXT':
       return ColumnTypeDuckDB.varchar;
+    case 'TIME':
+      return ColumnTypeDuckDB.time;
     case 'TIMESTAMP' || 'TIMESTAMP WITHOUT TIME ZONE' || 'DATETIME':
       return ColumnTypeDuckDB.timestamp;
     case 'TIMESTAMPTZ' || 'TIMESTAMP WITH TIME ZONE':

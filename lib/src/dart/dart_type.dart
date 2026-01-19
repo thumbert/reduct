@@ -31,7 +31,7 @@ String getDartType({
     case ColumnTypeDuckDB.varchar:
       return isNullable ? 'String?' : 'String';
     case ColumnTypeDuckDB.time:
-      return isNullable ? 'Time?' : 'Time'; // not supported yet
+      return isNullable ? 'Time?' : 'Time';
     case ColumnTypeDuckDB.timestamp:
       return isNullable ? 'DateTime?' : 'DateTime';
     case ColumnTypeDuckDB.enumType:
