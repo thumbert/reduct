@@ -2,6 +2,9 @@ TODO:
  - Implement required filters, that is filters without which the URL is invalid.
  - Fix all tests!
 
+# 0.3.1 (2026-02-11)
+- Minor fix on the snake case extension.  
+
 # 0.3.0 (2026-01-19)
 - Support TIME column type.  First cut.
 

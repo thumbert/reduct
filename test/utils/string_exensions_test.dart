@@ -10,6 +10,10 @@ void tests() {
       expect('hello_world'.toUpperSnakeCase(), 'HELLO_WORLD');
       expect('ARA1'.toUpperSnakeCase(), 'ARA_1');
     });
+    test('toSnakeCase', () {
+      expect('ARA1'.toSnakeCase(), 'ara_1');
+      expect('start15min'.toSnakeCase(), 'start_15min');
+    });
 
   });
 }

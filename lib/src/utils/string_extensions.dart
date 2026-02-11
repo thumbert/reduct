@@ -56,6 +56,8 @@ extension StringExtensions on String {
   ///  * "hello World" -> "hello_world"
   ///  * "helloWorld" -> "hello_world"
   ///  * "HelloWorld" -> "hello_world"
+  ///  * "ARA1" -> "ara_1"
+  ///  * "Start15min" -> "start_15min"
   String toSnakeCase() {
     // Insert underscore before every uppercase letter (except at the start),
     // and between letters and numbers, then lowercase
@@ -68,13 +70,9 @@ extension StringExtensions on String {
       RegExp(r'([A-Z]+)([A-Z][a-z])'),
       (m) => '${m.group(1)}_${m.group(2)}',
     );
-    // Insert underscore between letters and numbers
+    // Insert underscore before a run of digits when preceded by a letter
     s = s.replaceAllMapped(
-      RegExp(r'([A-Za-z])([0-9])'),
-      (m) => '${m.group(1)}_${m.group(2)}',
-    );
-    s = s.replaceAllMapped(
-      RegExp(r'([0-9])([A-Za-z])'),
+      RegExp(r'([A-Za-z])([0-9]+)'),
       (m) => '${m.group(1)}_${m.group(2)}',
     );
     s = s.replaceAll(RegExp(r'[\s\-]+'), '_');
