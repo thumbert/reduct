@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS public_bids_da (
     sch_bid_time_interval_start TIMESTAMPTZ,
     sch_bid_time_interval_end TIMESTAMPTZ,
     sch_bid_xaxis_data DECIMAL(9,4),
-    sch_bid_y1axis_data DECIMAL(9,4),
-    sch_bid_y2axis_data DECIMAL(9,4),
+    sch_bid_y1_axis_data DECIMAL(9,4),
+    sch_bid_y2_axis_data DECIMAL(9,4),
     sch_bid_curve_type ENUM('BIDPRICE'),
     min_eoh_state_of_charge DECIMAL(9,4),
     max_eoh_state_of_charge DECIMAL(9,4),
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS public_bids_da (
     timezoneName: 'America/Los_Angeles',
     apiRoute: '/caiso/public_bids_da',
   );
-  // print(generator.generateCode(Language.rust));
-  print(generator.generateHtmlDocs());
+  print(generator.generateCode(Language.rust));
+  // print(generator.generateHtmlDocs());
   // print(generator.generateCode(Language.dart));
 }

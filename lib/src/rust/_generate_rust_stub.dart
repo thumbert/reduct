@@ -73,7 +73,7 @@ String generateRustStub(CodeGenerator generator) {
   buffer.writeln('//=========================================================');
   buffer.writeln('// Rust API endpoint file');
   buffer.writeln('//=========================================================');
-  buffer.write(addApiImports(columns));
+  buffer.write(addApiImports(columns, apiRoute: generator.apiRoute));
   buffer.writeln();
   buffer.write(makeApiEndpoint(generator));
   buffer.writeln();

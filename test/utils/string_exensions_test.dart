@@ -13,6 +13,7 @@ void tests() {
     test('toSnakeCase', () {
       expect('ARA1'.toSnakeCase(), 'ara_1');
       expect('start15min'.toSnakeCase(), 'start_15min');
+      expect('sch_bid_y1axis_data'.toSnakeCase(), 'sch_bid_y1_axis_data');
     });
 
   });

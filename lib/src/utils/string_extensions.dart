@@ -70,10 +70,21 @@ extension StringExtensions on String {
       RegExp(r'([A-Z]+)([A-Z][a-z])'),
       (m) => '${m.group(1)}_${m.group(2)}',
     );
-    // Insert underscore before a run of digits when preceded by a letter
+    // Insert underscore before a run of digits when preceded by at least
+    // two letters (so single-letter identifiers like `y1axis` keep the
+    // letter attached to the digits). This yields `start_15min` but
+    // preserves `y1axis` -> `y1axis` for the next step.
     s = s.replaceAllMapped(
-      RegExp(r'([A-Za-z])([0-9]+)'),
+      RegExp(r'([A-Za-z]{2,})([0-9]+)'),
       (m) => '${m.group(1)}_${m.group(2)}',
+    );
+    // For sequences where a single letter is followed by digits and then
+    // letters (e.g. `y1axis`), keep the single letter attached to the
+    // digits and insert an underscore before the following letters to
+    // produce `y1_axis`.
+    s = s.replaceAllMapped(
+      RegExp(r'([A-Za-z])([0-9]+)([A-Za-z]+)'),
+      (m) => '${m.group(1)}${m.group(2)}_${m.group(3)}',
     );
     s = s.replaceAll(RegExp(r'[\s\-]+'), '_');
     s = s.replaceAll(RegExp(r'_+'), '_');

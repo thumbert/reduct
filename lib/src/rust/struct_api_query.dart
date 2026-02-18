@@ -1,13 +1,13 @@
 import 'package:reduct/reduct.dart';
 import 'package:reduct/src/rust/rust_type.dart';
 
-String addApiImports(List<Column> columns) {
+String addApiImports(List<Column> columns, {required String apiRoute}) {
   final buffer = StringBuffer();
   buffer.writeln('use std::time::Duration;');
   buffer.writeln('use actix_web::{get, web, HttpResponse, Responder};');
 
   buffer.writeln('use serde::{Serialize, Deserialize};');
-  buffer.writeln('use duckdb::Connection;');
+  buffer.writeln('use duckdb::AccessMode;');
   buffer.writeln('');
 
   bool hasDecimal = false;
@@ -60,6 +60,10 @@ String addApiImports(List<Column> columns) {
   if (hasTimestamptz) {
     buffer.writeln('use jiff::{Zoned, tz::TimeZone};');
   }
+
+  buffer.writeln();
+  buffer.writeln('use crate::utils::lib_duckdb::open_with_retry;');
+  buffer.writeln('use crate::db::${apiRoute.replaceAll('/', '::')}::*;');
 
   buffer.writeln();
   return buffer.toString();
