@@ -63,7 +63,7 @@ String addApiImports(List<Column> columns, {required String apiRoute}) {
 
   buffer.writeln();
   buffer.writeln('use crate::utils::lib_duckdb::open_with_retry;');
-  buffer.writeln('use crate::db::${apiRoute.replaceAll('/', '::')}::*;');
+  buffer.writeln('use crate::db${apiRoute.replaceAll('/', '::')}::*;');
 
   buffer.writeln();
   return buffer.toString();

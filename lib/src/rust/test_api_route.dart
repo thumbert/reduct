@@ -7,6 +7,7 @@ String makeApiTest(CodeGenerator generator) {
   buffer.writeln('#[cfg(test)]');
   buffer.writeln('mod api_tests {');
   buffer.writeln('    use super::*;');
+  buffer.writeln('    use crate::db::prod_db::ProdDb;');
   buffer.writeln('    use actix_web::{test, web, App};');
   buffer.writeln();
   buffer.writeln('    #[actix_web::test]');
