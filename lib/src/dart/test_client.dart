@@ -23,7 +23,7 @@ String makeClientTest(CodeGenerator generator) {
     }
   }
 
-  buffer.writeln("import 'dart:test';");
+  buffer.writeln("import 'package:test/test.dart';");
   buffer.writeln("import 'package:dotenv/dotenv.dart' as dotenv;");
   buffer.writeln();
   if (hasDate) {
