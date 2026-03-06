@@ -103,7 +103,7 @@ String makeRecordClass(List<Column> columns, {String className = 'Record'}) {
     switch (column.type) {
       case ColumnTypeDuckDB.enumType || ColumnTypeDuckDB.time:
         buffer.writeln(
-          '      \'$fieldName\': $fieldName$nullAware.toString(),',
+          '      \'${column.name}\': $fieldName$nullAware.toString(),',
         );
         continue;
       case ColumnTypeDuckDB.timestamptz || ColumnTypeDuckDB.date:
@@ -112,7 +112,7 @@ String makeRecordClass(List<Column> columns, {String className = 'Record'}) {
         );
         continue;
       case _:
-        buffer.writeln('      \'$fieldName\': $fieldName,');
+        buffer.writeln('      \'${column.name}\': $fieldName,');
         continue;
     }
   }

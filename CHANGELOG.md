@@ -4,6 +4,8 @@ TODO:
 
 # 0.3.4 (2026-03-06)
 - Add equality and hashCode methods to the Dart Record class.
+- Make the Dart client Record class toJson() method output consistent with fromJson()
+  and the Rust implementation.   
 
 # 0.3.3 (2026-03-03)
 - Fix imports in Rust API file. 
