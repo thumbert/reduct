@@ -2,8 +2,11 @@ TODO:
  - Implement required filters, that is filters without which the URL is invalid.
  - Fix all tests!
 
+# 0.3.4 (2026-03-06)
+- Add equality and hashCode methods to the Dart Record class.
+
 # 0.3.3 (2026-03-03)
-- Fix imports in Rust API file 
+- Fix imports in Rust API file. 
 
 # 0.3.2 (2026-02-18)
 - Minor fix on the snake case extension when dealing with digits.

@@ -57,10 +57,7 @@ String makeClientTest(CodeGenerator generator) {
   if (hasTimestamptz) {
     buffer.writeln("  initializeTimeZones();");
   }
-  buffer.writeln(
-    "final rootUrl = "
-    "dotenv.env['RUST_SERVER_URL'] ?? 'http://localhost:8111';",
-  );
+  buffer.writeln("final rootUrl = dotenv.env['RUST_SERVER'];");
   buffer.writeln(" await tests(rootUrl);");
   buffer.writeln("}");
 

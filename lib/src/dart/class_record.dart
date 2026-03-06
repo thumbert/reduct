@@ -126,6 +126,30 @@ String makeRecordClass(List<Column> columns, {String className = 'Record'}) {
   buffer.writeln('    return toJson().toString();');
   buffer.writeln('  }');
 
+  // Equality method
+  buffer.writeln('  @override');
+  buffer.writeln('  bool operator ==(Object other) {');
+  buffer.writeln('    if (identical(this, other)) return true;');
+  buffer.writeln('    return other is $className &&');
+  for (final column in columns) {
+    final fieldName = column.name.toCamelCase();
+    buffer.writeln('        other.$fieldName == $fieldName &&');
+  }
+  buffer.writeln('        true;');
+  buffer.writeln('  }');
+  buffer.writeln();
+
+  // hashCode method
+  buffer.writeln('  @override');
+  buffer.writeln('  int get hashCode {');
+  buffer.writeln('    return Object.hashAll([');
+  for (final column in columns) {
+    final fieldName = column.name.toCamelCase();
+    buffer.writeln('      $fieldName,');
+  }
+  buffer.writeln('    ]);');
+  buffer.writeln('  }');
+
   buffer.writeln('}');
   return buffer.toString();
 }
