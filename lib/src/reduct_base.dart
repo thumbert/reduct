@@ -101,7 +101,7 @@ class Column {
       name: getColumnName(input),
       type: type,
       isNullable: isColumnNullable(input),
-      timezoneName: type == ColumnTypeDuckDB.timestamptz ? timezoneName! : null,
+      timezoneName: type == ColumnTypeDuckDB.timestamptz ? timezoneName : null,
     )..input = input;
   }
 

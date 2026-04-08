@@ -2,6 +2,9 @@ TODO:
  - Implement required filters, that is filters without which the URL is invalid.
  - Fix all tests!
 
+# 2026-04-08
+- Provide clear error when timezoneName is not specified for a TIMESTAMPTZ column
+
 # 0.3.4 (2026-03-06)
 - Add equality and hashCode methods to the Dart Record class.
 - Make the Dart client Record class toJson() method output consistent with fromJson()
