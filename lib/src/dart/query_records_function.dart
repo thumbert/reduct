@@ -25,7 +25,7 @@ String makeQueryRecordsFunction(CodeGenerator generator) {
   buffer.writeln('    queryParams[\'_limit\'] = limit.toString();');
   buffer.writeln('  }');
   buffer.writeln('  final uri = Uri.parse(rootUrl).replace(');
-  buffer.writeln('    path: \'/${generator.apiRoute}\',');
+  buffer.writeln('    path: \'${generator.apiRoute}\',');
   buffer.writeln('    queryParameters: queryParams,');
   buffer.writeln('  );');
   buffer.writeln('  final response = await client.get(uri);');

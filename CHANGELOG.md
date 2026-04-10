@@ -1,6 +1,12 @@
 TODO:
- - Implement required filters, that is filters without which the URL is invalid.
+ - Implement required filters, that is filters without which the URL is invalid. Give example!
  - Fix all tests!
+ - For a Rust Zoned field, add the annotation to serialize and deserialize 
+   the field to skip the explicit timezone  
+
+
+# 2026-04-09
+- Fix path of the Dart client url (it had an extra /)
 
 # 2026-04-08
 - Provide clear error when timezoneName is not specified for a TIMESTAMPTZ column
