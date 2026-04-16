@@ -4,6 +4,9 @@ TODO:
  - For a Rust Zoned field, add the annotation to serialize and deserialize 
    the field to skip the explicit timezone  
 
+# 2026-04-16 (0.3.5)
+- Introduce onlyFilter argument to generate API query parameters for only a subset of 
+  columns.
 
 # 2026-04-09
 - Fix path of the Dart client url (it had an extra /)

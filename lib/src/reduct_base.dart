@@ -7,10 +7,15 @@ import 'rust/_generate_rust_stub.dart';
 /// Supported target languages for code generation.
 enum Language { dart, rust }
 
+
+/// Only generate API filters for the columns specified in [onlyFilters]. If 
+/// null, the query API will generate filters on all columns.  For a wide table, 
+/// it may not make sense to generate filters for every column. 
 class CodeGenerator {
   CodeGenerator(
     this.sql, {
     this.requiredFilters = const [],
+    List<String>? onlyFilters,
     this.timezoneName,
     required this.apiRoute,
   }) {
@@ -24,6 +29,9 @@ class CodeGenerator {
     );
     tableName = getTableName(sql);
     columns = getColumns(sql, timezoneName: timezoneName);
+    onlyColumns = onlyFilters == null
+        ? columns
+        : columns.where((c) => onlyFilters.contains(c.name)).toList();
   }
 
   /// The SQL CREATE TABLE statement.
@@ -33,8 +41,11 @@ class CodeGenerator {
   /// It is required if there are any TIMESTAMPTZ columns.
   final String? timezoneName;
 
-  /// List of required filters for the API parameters.
+  /// List of required filters for the API parameters (a query without
+  /// these filters would be invalid).
   final List<String> requiredFilters;
+
+  // final List<String>? onlyFilters;
 
   /// The API route for querying without the root URL and filters.
   /// Should contain a leading slash and the table name,
@@ -44,6 +55,7 @@ class CodeGenerator {
   ///
   late final String tableName;
   late final List<Column> columns;
+  late final List<Column> onlyColumns;
 
   String generateCode(Language language) {
     switch (language) {
@@ -55,7 +67,7 @@ class CodeGenerator {
   }
 
   String generateHtmlDocs() {
-    return generateDocs(columns);
+    return generateDocs(onlyColumns);
   }
 }
 

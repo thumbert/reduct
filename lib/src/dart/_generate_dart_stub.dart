@@ -35,7 +35,7 @@ String generateDartStub(CodeGenerator generator) {
   }
 
   buffer.write('\n');
-  buffer.write(makeQueryFilterClass(columns));
+  buffer.write(makeQueryFilterClass(generator.onlyColumns));
 
   buffer.write('\n\n');
   buffer.write(makeClientTest(generator));

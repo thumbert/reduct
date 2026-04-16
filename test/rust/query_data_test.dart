@@ -5,22 +5,23 @@ import 'package:test/test.dart';
 void tests() {
   group('get_data tests', () {
     test('makeQueryFunction to query data, with zoned', () {
-      var columns = <Column>[
-        Column(
-          name: 'hour_beginning',
-          type: ColumnTypeDuckDB.timestamptz,
-          isNullable: false,
-          timezoneName: 'America/New_York',
-        ),
-      ];
-      final queryFn = makeQueryFunction('lmp', columns);
+      final generator = CodeGenerator(
+        '''
+CREATE TABLE basic (
+  hour_beginning TIMESTAMPTZ NOT NULL
+);
+''',
+        timezoneName: 'America/New_York',
+        apiRoute: '/basic',
+      );
+      final queryFn = makeQueryFunction(generator);
       print(queryFn);
       final expected =
           '''pub fn get_data(conn: &Connection, query_filter: &QueryFilter) -> Result<Vec<Record>, Box<dyn std::error::Error>> {
    let mut query = String::from(r#"
 SELECT
     hour_beginning
-FROM lmp WHERE 1=1
+FROM basic WHERE 1=1
    "#);
     if let Some(hour_beginning) = &query_filter.hour_beginning {
         query.push_str(&format!("AND hour_beginning = '{}'", hour_beginning));
@@ -51,17 +52,24 @@ FROM lmp WHERE 1=1
     });
 
     test('makeQueryFunction to query data, with f64', () {
-      var columns = <Column>[
-        Column(name: 'lmp', type: ColumnTypeDuckDB.double, isNullable: false),
-      ];
-      final queryFn = makeQueryFunction('lmp', columns);
+      final generator = CodeGenerator(
+        '''
+CREATE TABLE basic (
+  lmp DOUBLE NOT NULL
+);
+''',
+        timezoneName: 'America/New_York',
+        apiRoute: '/basic',
+      );
+
+      final queryFn = makeQueryFunction(generator);
       // print(queryFn);
       final expected =
           '''pub fn get_data(conn: &Connection, query_filter: &QueryFilter) -> Result<Vec<Record>, Box<dyn std::error::Error>> {
    let mut query = String::from(r#"
 SELECT
     lmp
-FROM lmp WHERE 1=1
+FROM basic WHERE 1=1
    "#);
     if let Some(lmp_gte) = query_filter.lmp_gte {
         query.push_str(&format!("AND lmp_gte >= {}", lmp_gte));
@@ -85,23 +93,20 @@ FROM lmp WHERE 1=1
     });
 
     test('makeQueryFunction to query data, with enum', () {
-      var columns = <Column>[
-        Column(
-          name: 'status',
-          type: ColumnTypeDuckDB.enumType,
-          isNullable: false,
-        ),
-        Column(name: 'id', type: ColumnTypeDuckDB.int64, isNullable: false),
-      ];
-      final queryFn = makeQueryFunction('participants', columns);
-      print(queryFn);
+      final generator = CodeGenerator('''
+CREATE TABLE basic (
+    status ENUM('active', 'inactive') NOT NULL,
+    id BIGINT NOT NULL
+);
+''', apiRoute: '/basic');
+      final queryFn = makeQueryFunction(generator);
       final expected =
           '''pub fn get_data(conn: &Connection, query_filter: &QueryFilter) -> Result<Vec<Record>, Box<dyn std::error::Error>> {
    let mut query = String::from(r#"
 SELECT
     status,
     id
-FROM participants WHERE 1=1
+FROM basic WHERE 1=1
    "#);
     if let Some(status) = query_filter.status {
         query.push_str(&format!("AND status = '{}'", status));

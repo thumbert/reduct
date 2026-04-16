@@ -10,8 +10,8 @@ import 'sql_query.dart';
 /// The query uses all the fields of struct [QueryFilter] to add all the
 /// supported AND filter clauses.
 /// [limit] is an optional limit on the number of records to return.
-/// 
-String makeQueryFunction(String tableName, List<Column> columns, {int? limit}) {
+///
+String makeQueryFunction(CodeGenerator generator, {int? limit}) {
   final buffer = StringBuffer();
 
   // Function signature
@@ -20,12 +20,14 @@ String makeQueryFunction(String tableName, List<Column> columns, {int? limit}) {
   );
 
   // Add the SQL query
-  buffer.writeln(makeSqlQuery(tableName, columns, limit: limit));
+  buffer.writeln(
+    makeSqlQuery(generator.tableName, generator.onlyColumns, limit: limit),
+  );
 
   // Prepare and execute the query
   buffer.writeln('    let mut stmt = conn.prepare(&query)?;');
   buffer.writeln('    let rows = stmt.query_map([], |row| {');
-  for (var (i, column) in columns.indexed) {
+  for (var (i, column) in generator.columns.indexed) {
     final rustType = getRustType(
       type: column.type,
       columnName: column.name,
@@ -164,7 +166,7 @@ String makeQueryFunction(String tableName, List<Column> columns, {int? limit}) {
     }
   }
   buffer.writeln('        Ok(Record {');
-  for (var column in columns) {
+  for (var column in generator.columns) {
     final name = column.name.toSnakeCase();
     buffer.writeln('            $name,');
   }

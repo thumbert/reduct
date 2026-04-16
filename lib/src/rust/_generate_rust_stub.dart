@@ -59,13 +59,13 @@ String generateRustStub(CodeGenerator generator) {
   }
 
   buffer.write('\n');
-  buffer.write(makeQueryFunction(tableName, columns));
+  buffer.write(makeQueryFunction(generator));
   buffer.write('\n');
-  buffer.write(makeQueryFilterStruct(columns));
+  buffer.write(makeQueryFilterStruct(generator.onlyColumns));
   buffer.write('\n');
-  buffer.write(makeQueryFilterImpl(columns));
+  buffer.write(makeQueryFilterImpl(generator.onlyColumns));
   buffer.write('\n');
-  buffer.write(makeQueryFilterBuilder(columns));
+  buffer.write(makeQueryFilterBuilder(generator.onlyColumns));
   buffer.write('\n');
   buffer.write(makeArchiveTest());
 
@@ -73,13 +73,15 @@ String generateRustStub(CodeGenerator generator) {
   buffer.writeln('//=========================================================');
   buffer.writeln('// Rust API endpoint file');
   buffer.writeln('//=========================================================');
-  buffer.write(addApiImports(columns, apiRoute: generator.apiRoute));
+  buffer.write(
+    addApiImports(generator.onlyColumns, apiRoute: generator.apiRoute),
+  );
   buffer.writeln();
   buffer.write(makeApiEndpoint(generator));
   buffer.writeln();
-  buffer.write(makeApiQueryStruct(columns));
+  buffer.write(makeApiQueryStruct(generator.onlyColumns));
   buffer.writeln();
-  buffer.write(makeApiQueryImpl(columns));
+  buffer.write(makeApiQueryImpl(generator.onlyColumns));
   buffer.writeln();
   buffer.write(makeApiTest(generator));
 

@@ -12,6 +12,7 @@ void main() {
     sql,
     timezoneName: 'America/New_York',
     apiRoute: '/basic',
+    onlyFilters: ['as_of', 'resource_type'],
   );
   print(generator.generateCode(Language.rust));
   print(generator.generateHtmlDocs());
