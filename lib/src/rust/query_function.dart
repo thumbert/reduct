@@ -21,7 +21,7 @@ String makeQueryFunction(CodeGenerator generator, {int? limit}) {
 
   // Add the SQL query
   buffer.writeln(
-    makeSqlQuery(generator.tableName, generator.onlyColumns, limit: limit),
+    makeSqlQuery(generator, limit: limit),
   );
 
   // Prepare and execute the query

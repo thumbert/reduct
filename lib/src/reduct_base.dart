@@ -7,10 +7,9 @@ import 'rust/_generate_rust_stub.dart';
 /// Supported target languages for code generation.
 enum Language { dart, rust }
 
-
-/// Only generate API filters for the columns specified in [onlyFilters]. If 
-/// null, the query API will generate filters on all columns.  For a wide table, 
-/// it may not make sense to generate filters for every column. 
+/// Only generate API filters for the columns specified in [onlyFilters]. If
+/// null, the query API will generate filters on all columns.  For a wide table,
+/// it may not make sense to generate filters for every column.
 class CodeGenerator {
   CodeGenerator(
     this.sql, {
@@ -52,9 +51,14 @@ class CodeGenerator {
   /// for example: '/caiso/public_bids_da'
   final String apiRoute;
 
-  ///
+  /// The name of the table, parsed from the SQL input.
   late final String tableName;
+
+  /// All the columns in the table, parsed from the SQL input.
   late final List<Column> columns;
+
+  /// The columns for which to generate API filters.  It is a subset of 
+  /// [columns] if [onlyFilters] is provided.
   late final List<Column> onlyColumns;
 
   String generateCode(Language language) {

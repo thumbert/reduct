@@ -5,17 +5,22 @@ import 'package:test/test.dart';
 void tests() {
   group('make SQL query', () {
     test('for simple columns', () {
-      var columns = <Column>[
-        Column(name: 'as_of', type: ColumnTypeDuckDB.date, isNullable: false),
-        Column(name: 'id', type: ColumnTypeDuckDB.int64, isNullable: false),
-        Column(name: 'name', type: ColumnTypeDuckDB.varchar, isNullable: false),
-        Column(
-          name: 'resource_type',
-          type: ColumnTypeDuckDB.enumType,
-          isNullable: false,
-        ),
-      ];
-      final sqlQuery = makeSqlQuery('participants', columns);
+      final generator = CodeGenerator(
+        '''
+CREATE TABLE basic (
+    hour_beginning TIMESTAMPTZ NOT NULL,
+    as_of DATE NOT NULL,
+    resource_type ENUM('solar', 'wind', 'hydro', 'storage') NOT NULL,
+    resource_id INTEGER NOT NULL,
+    location VARCHAR,
+    price DECIMAL(9,4),
+    start_time TIME NOT NULL,
+);
+''',
+        apiRoute: '/participants',
+        onlyFilters: ['as_of', 'id', 'name', 'resource_type'],
+      );
+      final sqlQuery = makeSqlQuery(generator);
       print(sqlQuery);
       expect(
         sqlQuery.contains(
@@ -44,15 +49,17 @@ void tests() {
     });
 
     test('for timestamptz', () {
-      var columns = <Column>[
-        Column(
-          name: 'time_start',
-          type: ColumnTypeDuckDB.timestamptz,
-          isNullable: true,
-          timezoneName: 'America/New_York',
-        ),
-      ];
-      final sqlQuery = makeSqlQuery('participants', columns);
+      final generator = CodeGenerator(
+        '''
+CREATE TABLE participants (
+    time_start TIMESTAMPTZ,
+);
+''',
+        apiRoute: '/participants',
+        onlyFilters: ['time_start'],
+        timezoneName: 'America/New_York',
+      );
+      final sqlQuery = makeSqlQuery(generator);
       expect(
         sqlQuery.contains(
           "    if let Some(time_start) = &query_filter.time_start {",
