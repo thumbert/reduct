@@ -320,7 +320,7 @@ ColumnTypeDuckDB getColumnType(String input) {
     typeString = typeString.split('(').first;
   }
   switch (typeString) {
-    case 'BOOLEAN':
+    case 'BOOLEAN' || 'BOOL':
       return ColumnTypeDuckDB.boolean;
     case 'DATE':
       return ColumnTypeDuckDB.date;

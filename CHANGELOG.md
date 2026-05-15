@@ -4,6 +4,9 @@ TODO:
  - For a Rust Zoned field, add the annotation to serialize and deserialize 
    the field to skip the explicit timezone  
 
+# 2026-05-15
+- Allow BOOL as column type, not only BOOLEAN
+
 # 2026-04-17
 - Fix bug introduced on 4/16
 
