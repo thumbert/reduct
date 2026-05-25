@@ -8,6 +8,7 @@ TODO:
  - The Dart toUriParams() method of the QueryFilter class the fields have 
    unneeded parentheses, for example:  parms['hub'] = (hub).toString();  
  - Don't crash when there are comment lines in sql
+ - More fixes on toSnakeCase(), accept 'so2_mass' as being in snake case. 
 
 # 2026-05-15
 - Allow BOOL as column type, not only BOOLEAN

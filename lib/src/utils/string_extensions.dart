@@ -58,6 +58,8 @@ extension StringExtensions on String {
   ///  * "HelloWorld" -> "hello_world"
   ///  * "ARA1" -> "ara_1"
   ///  * "Start15min" -> "start_15min"
+  ///  * "so2_mass" -> "so2_mass"
+  ///  * "so2Mass" -> "so2_mass"
   String toSnakeCase() {
     // Insert underscore before every uppercase letter (except at the start),
     // and between letters and numbers, then lowercase
@@ -70,12 +72,17 @@ extension StringExtensions on String {
       RegExp(r'([A-Z]+)([A-Z][a-z])'),
       (m) => '${m.group(1)}_${m.group(2)}',
     );
-    // Insert underscore before a run of digits when preceded by at least
-    // two letters (so single-letter identifiers like `y1axis` keep the
-    // letter attached to the digits). This yields `start_15min` but
-    // preserves `y1axis` -> `y1axis` for the next step.
+    // Insert underscore before digits that are embedded within a word
+    // (i.e., followed by more letters): "start15min" -> "start_15min".
+    // The lookahead (?=[A-Za-z]) ensures digits at the end of a lowercase
+    // token (e.g. "so2" in "so2_mass") are left untouched.
     s = s.replaceAllMapped(
-      RegExp(r'([A-Za-z]{2,})([0-9]+)'),
+      RegExp(r'([A-Za-z]{2,})([0-9]+)(?=[A-Za-z])'),
+      (m) => '${m.group(1)}_${m.group(2)}',
+    );
+    // Split uppercase acronyms from trailing digits: "ARA1" -> "ARA_1".
+    s = s.replaceAllMapped(
+      RegExp(r'([A-Z]{2,})([0-9]+)'),
       (m) => '${m.group(1)}_${m.group(2)}',
     );
     // For sequences where a single letter is followed by digits and then
