@@ -107,7 +107,7 @@ String makeQueryFilterClass(List<Column> columns) {
             continue;
           case _:
             buffer.writeln(
-              '    if ($fieldName$dartExt != null) { params[\'${column.name}$ext\'] = ($fieldName$dartExt).toString();}',
+              '    if ($fieldName$dartExt != null) { params[\'${column.name}$ext\'] = $fieldName$dartExt.toString();}',
             );
             continue;
         }

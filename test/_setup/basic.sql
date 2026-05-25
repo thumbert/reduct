@@ -2,6 +2,7 @@
 CREATE TABLE basic (
     hour_beginning TIMESTAMPTZ NOT NULL,
     as_of DATE NOT NULL,
+    -- an enum with the 4 resource types, not null
     resource_type ENUM('solar', 'wind', 'hydro', 'storage') NOT NULL,
     resource_id INTEGER NOT NULL,
     location VARCHAR,

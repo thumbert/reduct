@@ -265,9 +265,16 @@ List<String> splitColumnDefinitions(String sql) {
   if (tableDefMatch == null) return [];
   final columnsBlock = tableDefMatch.group(1)!;
 
+  // Get rid of empty lines and comments
+  final cleanedColumnsBlock = columnsBlock
+      .split('\n')
+      .map((line) => line.trim())
+      .where((line) => line.isNotEmpty && !line.startsWith('--'))
+      .join('\n');
+
   // Split on commas not inside parentheses (handles multi-line and enums)
   final splitter = RegExp(r',(?![^(]*\))');
-  return columnsBlock
+  return cleanedColumnsBlock
       .split(splitter)
       .map(
         (s) => s.trim().replaceAll('\n', ' ').replaceAll(RegExp(r'\s+'), ' '),

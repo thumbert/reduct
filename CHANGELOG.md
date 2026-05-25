@@ -4,6 +4,11 @@ TODO:
  - For a Rust Zoned field, add the annotation to serialize and deserialize 
    the field to skip the explicit timezone  
 
+# 2026-05-25
+ - The Dart toUriParams() method of the QueryFilter class the fields have 
+   unneeded parentheses, for example:  parms['hub'] = (hub).toString();  
+ - Don't crash when there are comment lines in sql
+
 # 2026-05-15
 - Allow BOOL as column type, not only BOOLEAN
 
