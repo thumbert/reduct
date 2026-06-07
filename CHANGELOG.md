@@ -4,11 +4,15 @@ TODO:
  - For a Rust Zoned field, add the annotation to serialize and deserialize 
    the field to skip the explicit timezone  
 
+# 2026-06-07
+- Provide serde attr for Zoned fields in Rust (don't serialize the tz location, it's 
+  a bit of an overkill.) 
+
 # 2026-05-25
- - The Dart toUriParams() method of the QueryFilter class the fields have 
-   unneeded parentheses, for example:  parms['hub'] = (hub).toString();  
- - Don't crash when there are comment lines in sql
- - More fixes on toSnakeCase(), accept 'so2_mass' as being in snake case. 
+- The Dart toUriParams() method of the QueryFilter class the fields have 
+  unneeded parentheses, for example:  params['hub'] = (hub).toString();  
+- Don't crash when there are comment lines in sql
+- More fixes on toSnakeCase(), accept 'so2_mass' as being in snake case. 
 
 # 2026-05-15
 - Allow BOOL as column type, not only BOOLEAN

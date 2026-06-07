@@ -38,10 +38,10 @@ String generateRustStub(CodeGenerator generator) {
     '// Created on ${DateTime.now().toIso8601String().substring(0, 10)} '
     'with Dart package reduct\n',
   );
-  buffer.write(addImports(columns));
+  buffer.write(addImports(generator));
 
   buffer.write('\n');
-  buffer.write(makeStruct(columns));
+  buffer.write(makeStruct(generator));
 
   for (var column in columns) {
     if (column.type == ColumnTypeDuckDB.enumType) {

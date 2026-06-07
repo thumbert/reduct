@@ -17,6 +17,7 @@ class CodeGenerator {
     List<String>? onlyFilters,
     this.timezoneName,
     required this.apiRoute,
+    this.customZonedSerdeFunctions = defaultCustomZonedSerdeFunctions,
   }) {
     assert(
       apiRoute.startsWith('/'),
@@ -57,9 +58,28 @@ class CodeGenerator {
   /// All the columns in the table, parsed from the SQL input.
   late final List<Column> columns;
 
-  /// The columns for which to generate API filters.  It is a subset of 
+  /// The columns for which to generate API filters.  It is a subset of
   /// [columns] if [onlyFilters] is provided.
   late final List<Column> onlyColumns;
+
+  /// Custom Rust functions for handling zoned serialization and
+  /// deserialization. The keys are timezone names, e.g. 'America/New_York',
+  /// and the values are the Rust code snippets for the serde attributes to be
+  /// applied to zoned fields.
+  late final Map<String, String> customZonedSerdeFunctions;
+
+  /// default Rust functions for handling zoned serialization and
+  /// deserialization.
+  static const Map<String, String> defaultCustomZonedSerdeFunctions = {
+    'America/New_York': '''#[serde(
+        serialize_with = "serialize_zoned_as_offset",
+        deserialize_with = "deserialize_zoned_assume_ny"
+    )]''',
+    'America/Los_Angeles': '''#[serde(
+        serialize_with = "serialize_zoned_as_offset",
+        deserialize_with = "deserialize_zoned_assume_la"
+    )]''',
+  };
 
   String generateCode(Language language) {
     switch (language) {

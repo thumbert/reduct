@@ -1,9 +1,8 @@
 import 'package:reduct/reduct.dart';
 
-String addImports(List<Column> columns) {
+String addImports(CodeGenerator generator) {
+  final columns = generator.columns;
   final buffer = StringBuffer();
-  // buffer.writeln('use std::error::Error;');
-  // buffer.writeln('use log::{error, info};');
   buffer.writeln('use std::collections::HashMap;');
   buffer.writeln();
   buffer.writeln('use serde::{Serialize, Deserialize};');
@@ -27,6 +26,7 @@ String addImports(List<Column> columns) {
         break;
       case ColumnTypeDuckDB.enumType:
         hasEnum = true;
+        break;
       case ColumnTypeDuckDB.time:
         hasTime = true;
         break;
@@ -60,6 +60,7 @@ String addImports(List<Column> columns) {
   }
   if (hasTimestamptz) {
     buffer.writeln('use jiff::{Zoned, tz::TimeZone};');
+    buffer.writeln('use crate::utils::serde_helpers::*;');
   }
 
   buffer.writeln();

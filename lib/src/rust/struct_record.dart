@@ -2,7 +2,8 @@ import 'package:reduct/reduct.dart';
 
 import 'rust_type.dart';
 
-String makeStruct(List<Column> columns) {
+String makeStruct(CodeGenerator generator) {
+  final columns = generator.columns;
   final buffer = StringBuffer();
   buffer.writeln('#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]');
   buffer.writeln('pub struct Record {');
@@ -18,6 +19,12 @@ String makeStruct(List<Column> columns) {
       buffer.writeln(
         '    #[serde(with = "rust_decimal::serde::float_option")]',
       );
+    } else if (rustType == 'Zoned') {
+      final serdeAttr = generator
+          .customZonedSerdeFunctions[generator.timezoneName ?? 'default'];
+      if (serdeAttr != null) {
+        buffer.writeln('    $serdeAttr');
+      }
     }
     buffer.writeln('    pub ${column.name}: $rustType,');
   }
