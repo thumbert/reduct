@@ -1,10 +1,11 @@
 import 'package:reduct/reduct.dart';
-import 'package:reduct/src/utils/string_extensions.dart';
 
 String makeSqlQuery(CodeGenerator generator, {int? limit}) {
   final buffer = StringBuffer();
   var query = 'SELECT\n    ';
-  query += generator.columns.map((c) => c.name.toSnakeCase()).join(',\n    ');
+  query += generator.columns
+      .map((c) => c.needsQuotes ? '"${c.name}"' : c.name)
+      .join(',\n    ');
   query += '\nFROM ${generator.tableName} WHERE 1=1';
   buffer.writeln('   let mut query = String::from(r#"\n$query"#);');
 

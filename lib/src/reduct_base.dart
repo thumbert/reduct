@@ -101,6 +101,7 @@ class Column {
     required this.type,
     required this.isNullable,
     this.timezoneName,
+    this.needsQuotes = false,
   }) {
     filterClauses = Column.getDefaultFilters(type);
     if (type == ColumnTypeDuckDB.timestamptz) {
@@ -121,6 +122,7 @@ class Column {
   final String name;
   final ColumnTypeDuckDB type;
   final bool isNullable;
+  final bool needsQuotes;
   late final String? timezoneName;
 
   late final String input;
@@ -128,8 +130,9 @@ class Column {
 
   /// Create a Column from a SQL column definition string, e.g. a line like:
   /// ```sql
-  /// hour_beginning TIMESTAMPTZ NOT NULL,
-  /// lmp DECIMAL(18,5) NOT NULL,
+  ///   hour_beginning TIMESTAMPTZ NOT NULL,
+  ///   lmp DECIMAL(18,5) NOT NULL,
+  ///   "asof" DATE NOT NULL,
   /// ```
   static Column from(String input, {String? timezoneName}) {
     final type = getColumnType(input);
@@ -137,6 +140,7 @@ class Column {
       name: getColumnName(input),
       type: type,
       isNullable: isColumnNullable(input),
+      needsQuotes: hasQuotes(input),
       timezoneName: type == ColumnTypeDuckDB.timestamptz ? timezoneName : null,
     )..input = input;
   }
@@ -147,11 +151,13 @@ class Column {
     bool? isNullable,
     List<FilterClause>? filterClauses,
     String? timezoneName,
+    bool? needsQuotes,
   }) {
     return Column(
       name: name ?? this.name,
       type: type ?? this.type,
       isNullable: isNullable ?? this.isNullable,
+      needsQuotes: needsQuotes ?? this.needsQuotes,
       timezoneName: timezoneName ?? this.timezoneName,
     );
   }
@@ -208,6 +214,7 @@ enum FilterClause {
   /// Construct the SQL filter clause string for this `Column`.
   String makeFilter(Column column) {
     late final String filterString;
+    var columnName =  column.needsQuotes ? '"${column.name}"' : column.name;
     switch (column.type) {
       case ColumnTypeDuckDB.varchar ||
           ColumnTypeDuckDB.enumType ||
@@ -216,44 +223,44 @@ enum FilterClause {
           ColumnTypeDuckDB.date:
         switch (this) {
           case FilterClause.equal:
-            filterString = "AND ${column.name} = '{}'";
+            filterString = "AND $columnName = '{}'";
             break;
           case FilterClause.like:
-            filterString = "AND ${column.name} LIKE '{}'";
+            filterString = "AND $columnName LIKE '{}'";
             break;
           case FilterClause.inList:
-            filterString = "AND ${column.name} IN ('{}')";
+            filterString = "AND $columnName IN ('{}')";
             break;
           case FilterClause.greaterThanOrEqual:
-            filterString = "AND ${column.name} >= '{}'";
+            filterString = "AND $columnName >= '{}'";
             break;
           case FilterClause.lessThanOrEqual:
-            filterString = "AND ${column.name} <= '{}'";
+            filterString = "AND $columnName <= '{}'";
             break;
           case FilterClause.lessThan:
-            filterString = "AND ${column.name} < '{}'";
+            filterString = "AND $columnName < '{}'";
             break;
         }
       default:
         // Numeric types and others
         switch (this) {
           case FilterClause.equal:
-            filterString = "AND ${column.name} = {}";
+            filterString = "AND $columnName = {}";
             break;
           case FilterClause.like:
-            filterString = "AND ${column.name} LIKE {}";
+            filterString = "AND $columnName LIKE {}";
             break;
           case FilterClause.inList:
-            filterString = "AND ${column.name} IN ({})";
+            filterString = "AND $columnName IN ({})";
             break;
           case FilterClause.greaterThanOrEqual:
-            filterString = "AND ${column.name} >= {}";
+            filterString = "AND $columnName >= {}";
             break;
           case FilterClause.lessThanOrEqual:
-            filterString = "AND ${column.name} <= {}";
+            filterString = "AND $columnName <= {}";
             break;
           case FilterClause.lessThan:
-            filterString = "AND ${column.name} < {}";
+            filterString = "AND $columnName < {}";
             break;
         }
         break;
@@ -331,10 +338,19 @@ String getColumnName(String input) {
       'Column name must be in snake_case: found "${parts[0]}"',
     );
   }
+
   /// strip any quotes from the column name, in case it is a reserved word like
   /// "asof" or "timestamp"
   parts[0] = parts[0].replaceAll('"', '');
   return parts[0];
+}
+
+bool hasQuotes(String input) {
+  final parts = input.trim().split(RegExp(r'\s+'));
+  if (parts.isEmpty) {
+    throw FormatException('Invalid column definition: $input');
+  }
+  return parts[0].startsWith('"') && parts[0].endsWith('"');
 }
 
 ColumnTypeDuckDB getColumnType(String input) {

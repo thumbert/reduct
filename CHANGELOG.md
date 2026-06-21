@@ -5,7 +5,7 @@ TODO:
    the field to skip the explicit timezone  
 
 # 2026-06-21
-- Remove quotation of column name in case of a keyword.
+- Support quotation of column names for keywords, for example "asof", "timestamp".    
 
 # 2026-06-07
 - Provide serde attr for Zoned fields in Rust (don't serialize the tz location, it's 
