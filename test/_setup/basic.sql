@@ -9,6 +9,7 @@ CREATE TABLE basic (
     price DECIMAL(9,4),
     mw FLOAT,
     start_time TIME NOT NULL,
+    "asof" DATE NOT NULL,
 );
 
 INSERT INTO basic (hour_beginning, as_of, resource_type, resource_id, location, price, mw, start_time) VALUES

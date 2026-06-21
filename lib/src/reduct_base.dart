@@ -331,6 +331,9 @@ String getColumnName(String input) {
       'Column name must be in snake_case: found "${parts[0]}"',
     );
   }
+  /// strip any quotes from the column name, in case it is a reserved word like
+  /// "asof" or "timestamp"
+  parts[0] = parts[0].replaceAll('"', '');
   return parts[0];
 }
 

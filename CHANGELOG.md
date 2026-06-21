@@ -4,6 +4,9 @@ TODO:
  - For a Rust Zoned field, add the annotation to serialize and deserialize 
    the field to skip the explicit timezone  
 
+# 2026-06-21
+- Remove quotation of column name in case of a keyword.
+
 # 2026-06-07
 - Provide serde attr for Zoned fields in Rust (don't serialize the tz location, it's 
   a bit of an overkill.) 
