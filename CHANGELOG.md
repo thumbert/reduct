@@ -4,6 +4,9 @@ TODO:
  - For a Rust Zoned field, add the annotation to serialize and deserialize 
    the field to skip the explicit timezone  
 
+# 2026-06-28
+- Fix import of client library for Dart client test chunk.
+
 # 2026-06-21
 - Support quotation of column names for keywords, for example "asof", "timestamp".    
 

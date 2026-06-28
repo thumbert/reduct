@@ -34,7 +34,7 @@ String makeClientTest(CodeGenerator generator) {
     buffer.writeln("import 'package:timezone/data/latest.dart';");
   }
   buffer.writeln(
-    "import 'client/${generator.apiRoute}/${generator.tableName}.dart' as client;",
+    "import 'package:elec_server/client${generator.apiRoute}.dart' as client;",
   );
   buffer.writeln();
 
