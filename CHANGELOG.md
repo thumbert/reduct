@@ -4,6 +4,9 @@ TODO:
  - For a Rust Zoned field, add the annotation to serialize and deserialize 
    the field to skip the explicit timezone  
 
+# 2026-07-06 (version 0.5.0)
+- Support an empty list for `onlyFilters` argument to return all the table. 
+
 # 2026-06-28
 - Fix import of client library for Dart client test chunk.
 

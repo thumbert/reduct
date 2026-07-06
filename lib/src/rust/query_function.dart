@@ -16,13 +16,17 @@ String makeQueryFunction(CodeGenerator generator, {int? limit}) {
 
   // Function signature
   buffer.writeln(
-    'pub fn get_data(conn: &Connection, query_filter: &QueryFilter, limit: Option<usize>) -> Result<Vec<Record>, Box<dyn std::error::Error>> {',
+    'pub fn get_data(conn: &Connection, ',
+  );
+  if (generator.onlyColumns.isNotEmpty) {
+    buffer.write('query_filter: &QueryFilter,');
+  }
+  buffer.write(
+    'limit: Option<usize>) -> Result<Vec<Record>, Box<dyn std::error::Error>> {',
   );
 
   // Add the SQL query
-  buffer.writeln(
-    makeSqlQuery(generator, limit: limit),
-  );
+  buffer.writeln(makeSqlQuery(generator, limit: limit));
 
   // Prepare and execute the query
   buffer.writeln('    let mut stmt = conn.prepare(&query)?;');

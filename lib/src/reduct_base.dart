@@ -9,7 +9,8 @@ enum Language { dart, rust }
 
 /// Only generate API filters for the columns specified in [onlyFilters]. If
 /// null, the query API will generate filters on all columns.  For a wide table,
-/// it may not make sense to generate filters for every column.
+/// it may not make sense to generate filters for every column.  If empty,
+/// generate no filters.
 class CodeGenerator {
   CodeGenerator(
     this.sql, {
@@ -44,8 +45,6 @@ class CodeGenerator {
   /// List of required filters for the API parameters (a query without
   /// these filters would be invalid).
   final List<String> requiredFilters;
-
-  // final List<String>? onlyFilters;
 
   /// The API route for querying without the root URL and filters.
   /// Should contain a leading slash and the table name,

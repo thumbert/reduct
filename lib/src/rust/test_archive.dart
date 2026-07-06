@@ -1,6 +1,7 @@
+import 'package:reduct/src/reduct_base.dart';
 
 /// Generate the Rust test module for the archive data retrieval function.
-String makeArchiveTest() {
+String makeArchiveTest(CodeGenerator generator) {
   final buffer = StringBuffer();
 
   buffer.writeln('#[cfg(test)]');
@@ -13,12 +14,23 @@ String makeArchiveTest() {
   buffer.writeln('\n    #[test]');
   buffer.writeln('    fn test_get_data() -> Result<(), Box<dyn Error>> {');
   buffer.writeln(
-      '        let config = Config::default().access_mode(AccessMode::ReadOnly)?;');
+    '        let config = Config::default().access_mode(AccessMode::ReadOnly)?;',
+  );
   buffer.writeln(
-      '        let conn = Connection::open_with_flags(ProdDb::scratch().duckdb_path, config).unwrap();');
-  buffer.writeln('        let filter = QueryFilterBuilder::new().build();');
-  buffer.writeln(
-      '        let xs: Vec<Record> = get_data(&conn, &filter, Some(5)).unwrap();');
+    '        let conn = Connection::open_with_flags(ProdDb::scratch().duckdb_path, config).unwrap();',
+  );
+
+  if (generator.onlyColumns.isEmpty) {
+    buffer.writeln(
+      '        let xs: Vec<Record> = get_data(&conn, Some(5)).unwrap();',
+    );
+  } else {
+    buffer.writeln('        let filter = QueryFilterBuilder::new().build();');
+    buffer.writeln(
+      '        let xs: Vec<Record> = get_data(&conn, &filter, Some(5)).unwrap();',
+    );
+  }
+
   buffer.writeln('        conn.close().unwrap();');
   buffer.writeln('        assert_eq!(xs.len(), 5);');
   buffer.writeln('        Ok(())');

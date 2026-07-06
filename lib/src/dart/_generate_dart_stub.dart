@@ -20,7 +20,11 @@ String generateDartStub(CodeGenerator generator) {
   buffer.write(addImports(columns));
 
   buffer.write('\n');
-  buffer.write(makeQueryRecordsFunction(generator));
+  if (generator.onlyColumns.isEmpty) {
+    buffer.write(makeQueryNoFiltersFunction(generator));
+  } else {
+    buffer.write(makeQueryRecordsFunction(generator));
+  }
 
   buffer.write('\n');
   buffer.write(makeRecordClass(columns));
@@ -35,7 +39,9 @@ String generateDartStub(CodeGenerator generator) {
   }
 
   buffer.write('\n');
-  buffer.write(makeQueryFilterClass(generator.onlyColumns));
+  if (generator.onlyColumns.isNotEmpty) {
+    buffer.write(makeQueryFilterClass(generator.onlyColumns));
+  }
 
   buffer.write('\n\n');
   buffer.write(makeClientTest(generator));

@@ -3,11 +3,15 @@ import 'package:reduct/reduct.dart';
 String addImports(CodeGenerator generator) {
   final columns = generator.columns;
   final buffer = StringBuffer();
-  buffer.writeln('use std::collections::HashMap;');
+  if (generator.onlyColumns.isNotEmpty) {
+    buffer.writeln('use std::collections::HashMap;');
+  }
   buffer.writeln();
   buffer.writeln('use serde::{Serialize, Deserialize};');
   buffer.writeln('use duckdb::Connection;');
-  buffer.writeln('use url::form_urlencoded;');
+  if (generator.onlyColumns.isNotEmpty) {
+    buffer.writeln('use url::form_urlencoded;');
+  }
   buffer.writeln('');
 
   bool hasDecimal = false;

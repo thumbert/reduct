@@ -6,13 +6,12 @@ String addApiImports(List<Column> columns, {required String apiRoute}) {
   buffer.writeln('use std::time::Duration;');
   buffer.writeln('use actix_web::{get, web, HttpResponse, Responder};');
 
-  buffer.writeln('use serde::{Serialize, Deserialize};');
+  buffer.writeln('use serde::Deserialize;');
   buffer.writeln('use duckdb::AccessMode;');
   buffer.writeln('');
 
   bool hasDecimal = false;
   bool hasDate = false;
-  // bool hasEnum = false;
   bool hasTime = false;
   bool hasTimestamp = false;
   bool hasTimestamptz = false;
@@ -24,8 +23,6 @@ String addApiImports(List<Column> columns, {required String apiRoute}) {
       case ColumnTypeDuckDB.decimal:
         hasDecimal = true;
         break;
-      // case ColumnTypeDuckDB.enumType:
-      //   hasEnum = true;
       case ColumnTypeDuckDB.time:
         hasTime = true;
         break;
@@ -47,10 +44,6 @@ String addApiImports(List<Column> columns, {required String apiRoute}) {
   if (hasDecimal) {
     buffer.writeln('use rust_decimal::Decimal;');
   }
-  // if (hasEnum) {
-  //   buffer.writeln('use std::str::FromStr;');
-  //   buffer.writeln('use convert_case::{Case, Casing};');
-  // }
   if (hasTime) {
     buffer.writeln('use jiff::civil::Time;');
   }

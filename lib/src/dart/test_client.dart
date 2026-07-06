@@ -42,7 +42,9 @@ String makeClientTest(CodeGenerator generator) {
   buffer.writeln("  group('Client tests for ${generator.apiRoute}', () {");
   buffer.writeln("    test('Query records test', () async {");
   buffer.writeln("      final records = await client.queryRecords(");
-  buffer.writeln("        filter: client.QueryFilter(),");
+  if (generator.onlyColumns.isNotEmpty) {
+    buffer.writeln("        filter: client.QueryFilter(),");
+  }
   buffer.writeln("        limit: 5,");
   buffer.writeln("        rootUrl: rootUrl,");
   buffer.writeln("      );");

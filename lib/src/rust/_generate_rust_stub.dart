@@ -60,14 +60,17 @@ String generateRustStub(CodeGenerator generator) {
 
   buffer.write('\n');
   buffer.write(makeQueryFunction(generator));
-  buffer.write('\n');
-  buffer.write(makeQueryFilterStruct(generator.onlyColumns));
-  buffer.write('\n');
-  buffer.write(makeQueryFilterImpl(generator.onlyColumns));
-  buffer.write('\n');
-  buffer.write(makeQueryFilterBuilder(generator.onlyColumns));
-  buffer.write('\n');
-  buffer.write(makeArchiveTest());
+
+  if (generator.onlyColumns.isNotEmpty) {
+    buffer.write('\n');
+    buffer.write(makeQueryFilterStruct(generator.onlyColumns));
+    buffer.write('\n');
+    buffer.write(makeQueryFilterImpl(generator.onlyColumns));
+    buffer.write('\n');
+    buffer.write(makeQueryFilterBuilder(generator.onlyColumns));
+    buffer.write('\n');
+  }
+  buffer.write(makeArchiveTest(generator));
 
   buffer.write('\n\n');
   buffer.writeln('//=========================================================');
@@ -81,8 +84,10 @@ String generateRustStub(CodeGenerator generator) {
   buffer.writeln();
   buffer.write(makeApiQueryStruct(generator.onlyColumns));
   buffer.writeln();
-  buffer.write(makeApiQueryImpl(generator.onlyColumns));
-  buffer.writeln();
+  if (generator.onlyColumns.isNotEmpty) {
+    buffer.write(makeApiQueryImpl(generator.onlyColumns));
+    buffer.writeln();
+  }
   buffer.write(makeApiTest(generator));
 
   return buffer.toString();
