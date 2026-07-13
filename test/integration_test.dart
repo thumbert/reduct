@@ -6,7 +6,8 @@ void generateCode() {
   final sql = '''
 CREATE TABLE IF NOT EXISTS capacity_seasons (
     id INT64 NOT NULL,
-    description VARCHAR NOT NULL
+    description VARCHAR NOT NULL,
+    version TIMESTAMP NOT NULL
 );
 ''';
   final generator = CodeGenerator(

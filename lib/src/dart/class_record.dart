@@ -61,6 +61,17 @@ String makeRecordClass(List<Column> columns, {String className = 'Record'}) {
           );
         }
         continue;
+      case ColumnTypeDuckDB.timestamp:
+        if (column.isNullable) {
+          buffer.writeln(
+            '      $fieldName: json[\'${column.name}\'] == null ? null : DateTime.parse(json[\'${column.name}\'] as String),',
+          );
+        } else {
+          buffer.writeln(
+            '      $fieldName: DateTime.parse(json[\'${column.name}\'] as String),',
+          );
+        }
+        continue;
       case ColumnTypeDuckDB.timestamptz:
         if (column.isNullable) {
           buffer.writeln(
@@ -106,7 +117,9 @@ String makeRecordClass(List<Column> columns, {String className = 'Record'}) {
           '      \'${column.name}\': $fieldName$nullAware.toString(),',
         );
         continue;
-      case ColumnTypeDuckDB.timestamptz || ColumnTypeDuckDB.date:
+      case ColumnTypeDuckDB.timestamptz ||
+          ColumnTypeDuckDB.timestamp ||
+          ColumnTypeDuckDB.date:
         buffer.writeln(
           '      \'${column.name}\': $fieldName$nullAware.toIso8601String(),',
         );

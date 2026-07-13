@@ -4,6 +4,9 @@ TODO:
  - For a Rust Zoned field, add the annotation to serialize and deserialize 
    the field to skip the explicit timezone  
 
+# 2026-07-13 (version 0.5.1)
+- Fix Dart bug related to Timestamp column type.  
+
 # 2026-07-06 (version 0.5.0)
 - Support an empty list for `onlyFilters` argument to return all the table. 
 
